@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Local Claude/agent settings
+.claude/settings.local.json
+
+# Threat-modeling skill: setup-only copies, build and test artifacts
+.cowork/dist/
+.cowork/package/
+.cowork/vendor/
+.cowork/smoke/
+
+# FUSE temp files
+.fuse_hidden*
+
+# SQLite knowledge bases
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Terraform / Terragrunt state and caches
+*.tfstate
+*.tfstate.*
+.terraform/
+.terragrunt-cache/
+.terraform.lock.hcl
+Examples/S3/infra/.tfstate/
+.threatforest/.env
