@@ -2,6 +2,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
+# shellcheck source=../../scripts/ci/common.sh
+source "${REPO_ROOT}/scripts/ci/common.sh"
 
 printf '[debug] validating architecture JSON and Python contracts\n' >&2
 jq empty \
