@@ -7,7 +7,8 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 source "${REPO_ROOT}/config/tool-versions.env"
 
 install_dir="${REPO_ROOT}/.tools/bin"
-mkdir -p "${install_dir}"
+library_dir="${REPO_ROOT}/.tools/lib"
+mkdir -p "${install_dir}" "${library_dir}"
 temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/meridian-architecture-tools.XXXXXX")"
 cleanup() {
   [[ -d ${temp_dir} && ${temp_dir} == "${TMPDIR:-/tmp}/meridian-architecture-tools."* ]] || {
@@ -55,8 +56,8 @@ case "${platform}" in
     floci_sha="6fdf3b2f25da9cb9287a10069a19134bb33b227ca4ec5d7f2e7e724e7f6f4ec8"
     d2_platform="macos-arm64"
     d2_sha="80de85f3b0ac7d9569acac0780ed65dd994ea78969b6b230c58bbb2c6113465b"
-    plantuml_platform="macos-arm64"
-    plantuml_sha="12222c236aada460e379a694aa6329ea594c0e3eee11aa411665b43c8562bbf2"
+    ripgrep_target="aarch64-apple-darwin"
+    ripgrep_sha="3750b2e93f37e0c692657da574d7019a101c0084da05a790c83fd335bad973e4"
     ;;
   Linux:x86_64)
     tofu_asset="tofu_${OPENTOFU_VERSION}_linux_amd64.zip"
@@ -67,8 +68,8 @@ case "${platform}" in
     floci_sha="6a45b23f7b3a9fae9214e1028190c56398dfaf35bdfd3fe2c24c6735be841933"
     d2_platform="linux-amd64"
     d2_sha="eb172adf59f38d1e5a70ab177591356754ffaf9bebb84e0ca8b767dfb421dad7"
-    plantuml_platform="linux-amd64"
-    plantuml_sha="835c238634ed1b8638c3fdcfe4f94d005fc9664df3da2c88f80d0aaf4471b04b"
+    ripgrep_target="x86_64-unknown-linux-musl"
+    ripgrep_sha="33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c"
     ;;
   *)
     printf '[error] Unsupported platform: %s\n' "${platform}" >&2
@@ -100,13 +101,25 @@ verify_sha256 "${d2_sha}" "${d2_archive}"
 tar -xzf "${d2_archive}" -C "${temp_dir}"
 install -m 0755 "${temp_dir}/d2-v${D2_VERSION}/bin/d2" "${install_dir}/d2"
 
-plantuml_asset="native-plantuml-${plantuml_platform}-${PLANTUML_VERSION}.zip"
-plantuml_archive="${temp_dir}/${plantuml_asset}"
+ripgrep_asset="ripgrep-${RIPGREP_VERSION}-${ripgrep_target}.tar.gz"
+ripgrep_archive="${temp_dir}/${ripgrep_asset}"
+download "https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/${ripgrep_asset}" \
+  "${ripgrep_archive}"
+verify_sha256 "${ripgrep_sha}" "${ripgrep_archive}"
+tar -xzf "${ripgrep_archive}" -C "${temp_dir}"
+install -m 0755 \
+  "${temp_dir}/ripgrep-${RIPGREP_VERSION}-${ripgrep_target}/rg" \
+  "${install_dir}/rg"
+
+plantuml_asset="plantuml-${PLANTUML_VERSION}.jar"
+plantuml_jar="${temp_dir}/${plantuml_asset}"
 download "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/${plantuml_asset}" \
-  "${plantuml_archive}"
-verify_sha256 "${plantuml_sha}" "${plantuml_archive}"
-unzip -q "${plantuml_archive}" -d "${temp_dir}/plantuml"
-install -m 0755 "${temp_dir}/plantuml/plantuml" "${install_dir}/plantuml"
+  "${plantuml_jar}"
+verify_sha256 \
+  "89948f14c93756c7a3fb7b69078ff37e8489fd79dd430c582b931e2f65358690" \
+  "${plantuml_jar}"
+install -m 0644 "${plantuml_jar}" "${library_dir}/plantuml.jar"
+install -m 0755 "${SCRIPT_DIR}/plantuml-wrapper.sh" "${install_dir}/plantuml"
 
 if [[ ${platform} == Linux:x86_64 ]]; then
   aws_zip="${temp_dir}/awscli.zip"

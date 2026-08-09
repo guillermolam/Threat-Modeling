@@ -7,6 +7,11 @@
   },
   "posture": "current-state",
   "source_sha256": "e445e41e713267886fa120976cdceba681a0aa4e679038fefc5aa1c2d6664fce",
+  "evidence_scope": {
+    "start_marker": "## 3.4",
+    "end_marker": "## 3.5",
+    "offset_basis": "raw Unicode codepoint offsets in the scoped transcript"
+  },
   "normalization_contract": {
     "participants_are_graph_nodes": false,
     "relations_are_atomic": true,

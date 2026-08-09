@@ -111,8 +111,14 @@ stop_server
 
 pin_port="$(free_port)"
 start_server pass "${pin_port}"
+fake_binary_dir="${temp_dir}/fake-binary"
+mkdir -p "${fake_binary_dir}"
+install -m 0755 \
+  "${REPO_ROOT}/tests/threat-modeling/fake-ollama.py" \
+  "${fake_binary_dir}/ollama"
 set +e
-run_trial "${pin_port}" "${temp_dir}/wrong-pin.json" rel-current-04 wrong-binary-hash \
+PATH="${fake_binary_dir}:${PATH}" \
+  run_trial "${pin_port}" "${temp_dir}/wrong-pin.json" rel-current-04 wrong-binary-hash \
   2>"${temp_dir}/expected-binary-pin.log"
 pin_status=$?
 set -e
