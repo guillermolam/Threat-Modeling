@@ -27,6 +27,19 @@ if rg --line-number 'continue-on-error:[[:space:]]*true' \
   exit 1
 fi
 
+printf '[debug] validating the checksum-pinned headless PlantUML contract\n' >&2
+if rg --line-number --fixed-strings 'native-plantuml-' \
+  "${REPO_ROOT}/scripts/ci/install-architecture-tools.sh"; then
+  printf '[error] experimental native PlantUML artifact is not allowed\n' >&2
+  exit 1
+fi
+rg --quiet --fixed-strings \
+  'exec java -Djava.awt.headless=true -jar "${plantuml_jar}" "$@"' \
+  "${REPO_ROOT}/scripts/ci/plantuml-wrapper.sh" || {
+  printf '[error] PlantUML wrapper does not enforce headless JAR execution\n' >&2
+  exit 1
+}
+
 printf '[debug] validating HCL formatting; module validation runs after isolated apply\n' >&2
 tofu fmt -check -recursive "${REPO_ROOT}/Examples/S3/infra/modules"
 printf '[debug] architecture contracts passed\n' >&2

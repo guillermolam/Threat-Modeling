@@ -58,6 +58,12 @@ jobs:
           cache: false
           check-latest: false
 
+      - name: Set up pinned Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: 21.0.12+8
+
       - name: Set up pinned Task
         uses: go-task/setup-task@70f2430ad412f838533de8c0515c749ffb2b8bd3 # v1.1.0
         with:
@@ -88,6 +94,12 @@ jobs:
           go-version: 1.26.5
           cache: false
           check-latest: false
+
+      - name: Set up pinned Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: 21.0.12+8
 
       - name: Set up pinned Task
         uses: go-task/setup-task@70f2430ad412f838533de8c0515c749ffb2b8bd3 # v1.1.0
