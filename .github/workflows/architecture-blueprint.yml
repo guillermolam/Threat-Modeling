@@ -46,7 +46,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Check out the repository without persisted credentials
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -62,7 +62,7 @@ jobs:
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
-          java-version: 21.0.12+8
+          java-version: 21.0.12+8.0.LTS
 
       - name: Set up pinned Task
         uses: go-task/setup-task@70f2430ad412f838533de8c0515c749ffb2b8bd3 # v1.1.0
@@ -83,7 +83,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Check out the repository without persisted credentials
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -99,7 +99,7 @@ jobs:
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
-          java-version: 21.0.12+8
+          java-version: 21.0.12+8.0.LTS
 
       - name: Set up pinned Task
         uses: go-task/setup-task@70f2430ad412f838533de8c0515c749ffb2b8bd3 # v1.1.0
