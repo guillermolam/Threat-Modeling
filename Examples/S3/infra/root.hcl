@@ -23,8 +23,8 @@ locals {
     "env.hcl",
     "${get_terragrunt_dir()}/live/current-state/env.hcl",
   ))
-  env      = local.env_vars.locals.env
-  posture  = local.env_vars.locals.posture
+  env     = local.env_vars.locals.env
+  posture = local.env_vars.locals.posture
 
   # ---- Naming -----------------------------------------------------------
   # "meridian-cs-" (current state) / "meridian-ts-" (target state).
@@ -93,7 +93,6 @@ generate "provider" {
         lambda         = "${local.floci_endpoint}"
         sns            = "${local.floci_endpoint}"
         sqs            = "${local.floci_endpoint}"
-        config         = "${local.floci_endpoint}"
         configservice  = "${local.floci_endpoint}"
         secretsmanager = "${local.floci_endpoint}"
         ssm            = "${local.floci_endpoint}"
