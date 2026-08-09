@@ -56,6 +56,8 @@ case "${platform}" in
     floci_sha="6fdf3b2f25da9cb9287a10069a19134bb33b227ca4ec5d7f2e7e724e7f6f4ec8"
     d2_platform="macos-arm64"
     d2_sha="80de85f3b0ac7d9569acac0780ed65dd994ea78969b6b230c58bbb2c6113465b"
+    ripgrep_target="aarch64-apple-darwin"
+    ripgrep_sha="3750b2e93f37e0c692657da574d7019a101c0084da05a790c83fd335bad973e4"
     ;;
   Linux:x86_64)
     tofu_asset="tofu_${OPENTOFU_VERSION}_linux_amd64.zip"
@@ -66,6 +68,8 @@ case "${platform}" in
     floci_sha="6a45b23f7b3a9fae9214e1028190c56398dfaf35bdfd3fe2c24c6735be841933"
     d2_platform="linux-amd64"
     d2_sha="eb172adf59f38d1e5a70ab177591356754ffaf9bebb84e0ca8b767dfb421dad7"
+    ripgrep_target="x86_64-unknown-linux-musl"
+    ripgrep_sha="33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c"
     ;;
   *)
     printf '[error] Unsupported platform: %s\n' "${platform}" >&2
@@ -96,6 +100,16 @@ download "https://github.com/terrastruct/d2/releases/download/v${D2_VERSION}/${d
 verify_sha256 "${d2_sha}" "${d2_archive}"
 tar -xzf "${d2_archive}" -C "${temp_dir}"
 install -m 0755 "${temp_dir}/d2-v${D2_VERSION}/bin/d2" "${install_dir}/d2"
+
+ripgrep_asset="ripgrep-${RIPGREP_VERSION}-${ripgrep_target}.tar.gz"
+ripgrep_archive="${temp_dir}/${ripgrep_asset}"
+download "https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/${ripgrep_asset}" \
+  "${ripgrep_archive}"
+verify_sha256 "${ripgrep_sha}" "${ripgrep_archive}"
+tar -xzf "${ripgrep_archive}" -C "${temp_dir}"
+install -m 0755 \
+  "${temp_dir}/ripgrep-${RIPGREP_VERSION}-${ripgrep_target}/rg" \
+  "${install_dir}/rg"
 
 plantuml_asset="plantuml-${PLANTUML_VERSION}.jar"
 plantuml_jar="${temp_dir}/${plantuml_asset}"
