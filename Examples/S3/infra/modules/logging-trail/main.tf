@@ -252,14 +252,21 @@ resource "terraform_data" "trail" {
   ]
 
   provisioner "local-exec" {
-    command = <<-EOT
+    interpreter = ["/usr/bin/env", "bash", "-c"]
+    command     = <<-EOT
       set -euo pipefail
       export AWS_ACCESS_KEY_ID=test
       export AWS_SECRET_ACCESS_KEY=test
       export AWS_REGION='${self.input.region}'
       export AWS_ENDPOINT_URL='${self.input.endpoint}'
 
-      aws cloudtrail delete-trail --name '${self.input.name}' >/dev/null 2>&1 || true
+      existing_trail="$(aws cloudtrail describe-trails \
+        --trail-name-list '${self.input.name}' \
+        --query "trailList[?Name=='${self.input.name}'].Name | [0]" \
+        --output text)"
+      if [[ "$${existing_trail}" == '${self.input.name}' ]]; then
+        aws cloudtrail delete-trail --name '${self.input.name}' >/dev/null
+      fi
 
       aws cloudtrail create-trail \
         --name '${self.input.name}' \
@@ -279,13 +286,21 @@ resource "terraform_data" "trail" {
   }
 
   provisioner "local-exec" {
-    when    = destroy
-    command = <<-EOT
+    when        = destroy
+    interpreter = ["/usr/bin/env", "bash", "-c"]
+    command     = <<-EOT
+      set -euo pipefail
       export AWS_ACCESS_KEY_ID=test
       export AWS_SECRET_ACCESS_KEY=test
       export AWS_REGION='${self.input.region}'
       export AWS_ENDPOINT_URL='${self.input.endpoint}'
-      aws cloudtrail delete-trail --name '${self.input.name}' >/dev/null 2>&1 || true
+      existing_trail="$(aws cloudtrail describe-trails \
+        --trail-name-list '${self.input.name}' \
+        --query "trailList[?Name=='${self.input.name}'].Name | [0]" \
+        --output text)"
+      if [[ "$${existing_trail}" == '${self.input.name}' ]]; then
+        aws cloudtrail delete-trail --name '${self.input.name}' >/dev/null
+      fi
     EOT
   }
 

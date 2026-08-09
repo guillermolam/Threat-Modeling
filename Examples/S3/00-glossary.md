@@ -47,6 +47,10 @@ Grouped by domain so you can study one cluster at a time.
 | **TOCTOU** | Time Of Check To Time Of Use | Race condition where state changes between validation and use |
 | **MUC** | Misuse Case | LINDDUN's narrative format for a privacy threat |
 | **CRUD** | Create, Read, Update, Delete | The atomic action set in Trike's actor-asset-action matrix |
+| **OTM** | Open Threat Model | Portable architecture interchange for IriusRisk imports; not a complete native project export |
+| **YSC** | YAML Security Content | ISRA's authoring format for reusable components, risk patterns, threats, and countermeasures |
+| **ISRA** | IriusRisk Security Research Assistant | Toolkit for authoring and testing IriusRisk security content |
+| **TWC** | Threat–Weakness–Countermeasure | Relationship in which a threat is enabled by weaknesses and reduced by countermeasures |
 
 ## Threat Intelligence Catalogs
 

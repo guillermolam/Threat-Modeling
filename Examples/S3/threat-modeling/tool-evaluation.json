@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_graph": "../architecture/model-tags.json",
+  "promotion_policy": {
+    "automatic_promotion": false,
+    "required_checks": [
+      "syntax-compiles",
+      "stable-id-exact-coverage",
+      "flow-endpoints-unchanged",
+      "source-evidence-recorded",
+      "human-review"
+    ]
+  },
+  "experiments": [
+    {
+      "id": "qwen3-1.7b-alias-context-2026-08-10",
+      "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+      "ollama_version": "0.32.6",
+      "ollama_binary_sha256": "acecd6ca61310c1329fed95d38ccfe05cf8d5fddbc28304fa46629e96d03c318",
+      "options": {"temperature": 0, "seed": 20260809, "num_ctx": 4096, "top_k": 1, "top_p": 1, "repeat_penalty": 1},
+      "input_change": "Added sorted reviewed aliases and speaker-free enclosing utterance context while keeping closed enums and code-owned assembly unchanged.",
+      "result": {"accepted": 6, "review_queue": 9, "missing_evidence": ["unc-current-01"]},
+      "disposition": "not-promoted",
+      "rationale": "The input specification improved the measured result over the recorded 4/11 baseline, but four classification mismatches and four slot mismatches remain. This is evidence for better source context, not proof of model adequacy."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "ollama-qwen3-0.6b",
+      "kind": "model",
+      "source": "https://ollama.com/library/qwen3:0.6b",
+      "revision": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+      "roles": ["text-to-mermaid"],
+      "disposition": "rejected",
+      "rationale": "The 2026-08-09 Meridian fixture returned a non-Mermaid pseudo-DSL, changed flow semantics, and duplicated a flow."
+    },
+    {
+      "id": "ollama-qwen3-1.7b",
+      "kind": "model",
+      "source": "https://ollama.com/library/qwen3:1.7b",
+      "revision": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+      "roles": ["closed-set-fact-classification", "closed-set-relation-slots"],
+      "disposition": "rejected",
+      "rationale": "Raw-transcript and one-shot graph projection trials duplicated entities, produced self-loops, reversed analytics endpoints, and changed exact labels. After deterministic alias and atomic-relation normalization, duplicate closed-set classification and slot trials passed for a relation, attribute, and uncertainty on 2026-08-09; the missing-evidence and disagreement paths fail closed. A full live corpus trial accepted 4 facts and queued 11 (including the intentionally missing-evidence fact), so this model is not promoted for corpus-wide extraction. It remains advisory and cannot serialize or mutate the maintained graph. Re-measured on 2026-08-09 against the same model digest, seed 20260809, and identical options, the same corpus accepted 6 and queued 9: the Ollama runtime binary sha256 had changed from acecd6ca61310c1329fed95d38ccfe05cf8d5fddbc28304fa46629e96d03c318 to 1891afef04c07d24656c3da8ad44eca66057f5849a633849f4f5894a9432198e while still reporting version 0.32.6, so --expected-digest gates the weights but not the inference runtime, and cross-runtime reproducibility is therefore unproven. Five consecutive runs on one runtime were identical, so within-runtime reproducibility holds and the duplicate-call gate cannot detect runtime drift. Reversing the entity order in current-state.normalized.json -- a semantically null edit -- flipped rel-current-05 from accepted to slot-mismatch until the slot prompt was made order-invariant; after that fix the corpus accepts 5 and queues 10 identically under reordering. Determinacy analysis shows 0 of 10 reviewed relations are uniquely determined by the evidence fragment plus the {id,name,kind} registry and predicate contracts the model actually receives (2 to 86 admissible triples each), so slot-mismatch counts measure guessing under an under-specified input, not model capability."
+    },
+    {
+      "id": "mermaid-stable-3b",
+      "kind": "model",
+      "source": "https://huggingface.co/TroyDoesAI/MermaidStable3B",
+      "revision": "752ed2f",
+      "roles": ["text-to-mermaid"],
+      "disposition": "blocked",
+      "rationale": "Relevant specialization, but the 5.59 GB model requires remote model code and is CC-BY-NC-4.0; license and code review are required before execution."
+    },
+    {
+      "id": "chartgpt",
+      "kind": "model-and-dataset",
+      "source": "https://github.com/bebinca/ChartGPT-materials",
+      "revision": "unversioned-research-materials",
+      "roles": ["data-chart-generation"],
+      "disposition": "rejected",
+      "rationale": "Chart specification generation does not evaluate trust boundaries, DFD semantics, or architecture graphs."
+    },
+    {
+      "id": "diagram-gen-benchmark",
+      "kind": "dataset",
+      "source": "https://huggingface.co/datasets/OpenRaiser/DiagramGen",
+      "revision": "unversioned-dataset",
+      "roles": ["text-to-diagram-benchmark", "diagram-to-code-benchmark"],
+      "disposition": "candidate",
+      "rationale": "Useful for compiler and structure scoring, but its primary representations are DOT and LaTeX rather than Mermaid or security DFDs."
+    },
+    {
+      "id": "diagram-bank",
+      "kind": "dataset",
+      "source": "https://github.com/csml-rpi/DiagramBank",
+      "revision": "unversioned-research-dataset",
+      "roles": ["scientific-diagram-retrieval"],
+      "disposition": "rejected",
+      "rationale": "The image-and-paper-context corpus targets scientific teaser figures, not executable DFD graphs or security relationships."
+    },
+    {
+      "id": "zeroclaw-official",
+      "kind": "agent-runtime",
+      "source": "https://github.com/zeroclaw-labs/zeroclaw",
+      "revision": "a56c345d51dd8ab562e9351e0d4ab83f6a741db9",
+      "roles": ["ollama-orchestration", "structured-output"],
+      "disposition": "candidate",
+      "rationale": "Supports native Ollama and structured output; must be tested with tools disabled and repository-owned lifecycle hooks."
+    },
+    {
+      "id": "zeroclaw-openagen-fork",
+      "kind": "agent-runtime",
+      "source": "https://github.com/openagen/zeroclaw",
+      "revision": "untrusted-fork",
+      "roles": [],
+      "disposition": "prohibited",
+      "rationale": "The upstream project explicitly identifies this fork as impersonation. It must not be installed or executed."
+    },
+    {
+      "id": "zerostack",
+      "kind": "agent-runtime",
+      "source": "https://github.com/gi-dellav/zerostack",
+      "revision": "3753f539f1e57d83d115a6d5016e6027f138eb50",
+      "roles": ["ollama-orchestration", "image-to-code-experiment", "correlation-experiment"],
+      "disposition": "candidate",
+      "rationale": "Offers one-shot Ollama, optional multimodal input, permissions, sandboxing, and lifecycle hooks; its coding tools remain excessive for pure transforms and must be disabled."
+    }
+  ]
+}

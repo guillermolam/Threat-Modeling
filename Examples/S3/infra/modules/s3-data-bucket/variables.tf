@@ -145,6 +145,12 @@ variable "lifecycle_rules" {
   default = []
 }
 
+variable "use_native_lifecycle_resource" {
+  description = "Use the AWS provider lifecycle resource. Keep false for Floci, whose refresh currently removes this resource; true is reserved for compatibility testing against AWS."
+  type        = bool
+  default     = false
+}
+
 # --- Named grants ----------------------------------------------------------
 variable "read_principal_arns" {
   type    = list(string)

@@ -1,0 +1,111 @@
+name: Architecture blueprint
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/architecture-blueprint.yml
+      - Examples/S3/architecture/**
+      - Examples/S3/infra/**
+      - Examples/S3/threat-modeling/**
+      - scripts/architecture/**
+      - scripts/ci/**
+      - scripts/threat-modeling/**
+      - tests/architecture/**
+      - tests/threat-modeling/**
+      - Taskfile.yml
+      - config/tool-versions.env
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/architecture-blueprint.yml
+      - Examples/S3/architecture/**
+      - Examples/S3/infra/**
+      - Examples/S3/threat-modeling/**
+      - scripts/architecture/**
+      - scripts/ci/**
+      - scripts/threat-modeling/**
+      - tests/architecture/**
+      - tests/threat-modeling/**
+      - Taskfile.yml
+      - config/tool-versions.env
+  schedule:
+    - cron: 17 4 * * 1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: architecture-blueprint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-contract:
+    name: Offline architecture contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up pinned Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: 1.26.5
+          cache: false
+          check-latest: false
+
+      - name: Set up pinned Task
+        uses: go-task/setup-task@70f2430ad412f838533de8c0515c749ffb2b8bd3 # v1.1.0
+        with:
+          version: 3.52.0
+
+      - name: Install checksum-pinned architecture tools
+        run: task architecture:tools:install
+
+      - name: Run the local architecture unit contract
+        run: task architecture:test
+
+  isolated-floci:
+    name: Isolated Floci evidence and blueprint
+    needs: offline-contract
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out the repository without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up pinned Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: 1.26.5
+          cache: false
+          check-latest: false
+
+      - name: Set up pinned Task
+        uses: go-task/setup-task@70f2430ad412f838533de8c0515c749ffb2b8bd3 # v1.1.0
+        with:
+          version: 3.52.0
+
+      - name: Install checksum-pinned architecture tools
+        run: task architecture:tools:install
+
+      - name: Rebuild evidence and reject model drift
+        env:
+          ARCHITECTURE_ARTIFACT_DIR: ${{ runner.temp }}/meridian-architecture-artifacts
+        run: task architecture:integration
+
+      - name: Upload sanitized evidence and generated diagrams
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: meridian-architecture-${{ github.run_id }}
+          path: ${{ runner.temp }}/meridian-architecture-artifacts
+          if-no-files-found: error
+          retention-days: 14

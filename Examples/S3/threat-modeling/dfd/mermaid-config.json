@@ -1,0 +1,21 @@
+{
+  "deterministicIds": true,
+  "deterministicIDSeed": "meridian-s3-dfd-v1",
+  "flowchart": {
+    "curve": "basis",
+    "htmlLabels": true,
+    "nodeSpacing": 45,
+    "rankSpacing": 65,
+    "useMaxWidth": false
+  },
+  "securityLevel": "strict",
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Arial, sans-serif",
+    "fontSize": "14px",
+    "lineColor": "#475569",
+    "primaryColor": "#e0f2fe",
+    "primaryTextColor": "#0f172a",
+    "tertiaryColor": "#f8fafc"
+  }
+}

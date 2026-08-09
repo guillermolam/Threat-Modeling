@@ -26,17 +26,46 @@ locals {
   env     = local.env_vars.locals.env
   posture = local.env_vars.locals.posture
 
+  # ---- Threat-model identity --------------------------------------------
+  # These values are duplicated into AWS tags so a plan or Floci inventory
+  # can be mapped back to the reviewed architecture without guessing from
+  # resource names. The catalog is also the semantic input used by the
+  # architecture compiler and future AI conversion stages.
+  infra_dir     = try(get_parent_terragrunt_dir("root"), get_terragrunt_dir())
+  model_catalog = jsondecode(file("${local.infra_dir}/../architecture/model-tags.json"))
+  unit_name     = basename(get_terragrunt_dir())
+  unit_metadata = try(local.model_catalog.postures[local.env].units[local.unit_name], {
+    component_id        = "meridian-s3-${local.env}-${local.unit_name}"
+    family              = "unclassified"
+    trust_zone          = "tz-${local.env}-unclassified"
+    purpose             = "unclassified"
+    owner               = "unassigned"
+    data_classification = "unclassified"
+    findings            = []
+    flow_ids            = []
+  })
+
   # ---- Naming -----------------------------------------------------------
   # "meridian-cs-" (current state) / "meridian-ts-" (target state).
   # Both postures coexist in one Floci account so you can diff them live.
   name_prefix = "meridian-${local.env_vars.locals.short}"
 
   common_tags = {
-    Project     = "meridian-s3-threat-model"
-    Environment = local.env
-    Posture     = local.posture
-    ManagedBy   = "terragrunt"
-    Model       = "Examples/S3 v8"
+    Project                  = "meridian-s3-threat-model"
+    Environment              = local.env
+    Posture                  = local.posture
+    ManagedBy                = "terragrunt"
+    Model                    = "Examples/S3 v8"
+    "tm:component-id"        = local.unit_metadata.component_id
+    "tm:data-classification" = local.unit_metadata.data_classification
+    "tm:environment"         = local.env
+    "tm:family"              = local.unit_metadata.family
+    "tm:findings"            = join(",", local.unit_metadata.findings)
+    "tm:flows"               = join(",", local.unit_metadata.flow_ids)
+    "tm:owner"               = local.unit_metadata.owner
+    "tm:purpose"             = local.unit_metadata.purpose
+    "tm:source-unit"         = "live/${local.env}/${local.unit_name}"
+    "tm:trust-zone"          = local.unit_metadata.trust_zone
   }
 }
 

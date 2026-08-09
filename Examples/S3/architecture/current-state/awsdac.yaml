@@ -1,0 +1,231 @@
+{
+  "Diagram": {
+    "DefinitionFiles": [
+      {
+        "LocalFile": "Examples/S3/architecture/definition-meridian.yaml",
+        "Type": "LocalFile"
+      }
+    ],
+    "Links": [
+      {
+        "Source": "RActorCustomer",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentS3Monolith",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorCustomer",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentCompute",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpCurrentCompute",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentS3Monolith",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorPartner",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentIam",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpCurrentIam",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentS3Monolith",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorCicd",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentIam",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorAnalyticsAgent",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentS3Monolith",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpCurrentS3Monolith",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentKms",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpCurrentS3Monolith",
+        "SourcePosition": "E",
+        "Target": "RCmpCurrentLogging",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      }
+    ],
+    "Resources": {
+      "AWSCloud": {
+        "Children": [
+          "RTzCurrentCryptography",
+          "RTzCurrentData",
+          "RTzCurrentIdentity",
+          "RTzCurrentPublicEdge",
+          "RTzCurrentSecurityOperations",
+          "RTzCurrentWorkload"
+        ],
+        "Direction": "vertical",
+        "Preset": "AWSCloudNoLogo",
+        "Type": "AWS::Diagram::Cloud"
+      },
+      "Actors": {
+        "Children": [
+          "RActorAnalyticsAgent",
+          "RActorCicd",
+          "RActorCustomer",
+          "RActorPartner"
+        ],
+        "Type": "AWS::Diagram::VerticalStack"
+      },
+      "Canvas": {
+        "Children": [
+          "Actors",
+          "AWSCloud"
+        ],
+        "Direction": "horizontal",
+        "Type": "AWS::Diagram::Canvas"
+      },
+      "RActorAnalyticsAgent": {
+        "Preset": "User",
+        "Title": "Autonomous analytics agent",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RActorCicd": {
+        "Preset": "User",
+        "Title": "CI/CD pipeline",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RActorCustomer": {
+        "Preset": "User",
+        "Title": "Customer browser",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RActorPartner": {
+        "Preset": "User",
+        "Title": "Cross-account partner",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RCmpCurrentCompute": {
+        "Title": "compute (application-runtime)",
+        "Type": "AWS::EC2::Instance"
+      },
+      "RCmpCurrentDetection": {
+        "Title": "detection (security-alerting)",
+        "Type": "AWS::Events::Rule"
+      },
+      "RCmpCurrentEdge": {
+        "Title": "edge (content-delivery)",
+        "Type": "AWS::CloudFront::Distribution"
+      },
+      "RCmpCurrentIam": {
+        "Title": "iam (workload-and-human-identities)",
+        "Type": "AWS::IAM::Role"
+      },
+      "RCmpCurrentKms": {
+        "Title": "kms (mixed-data-encryption)",
+        "Type": "AWS::KMS::Key"
+      },
+      "RCmpCurrentLogging": {
+        "Title": "logging (audit-and-access-logging)",
+        "Type": "AWS::CloudTrail::Trail"
+      },
+      "RCmpCurrentS3Monolith": {
+        "Title": "s3-monolith (mixed-object-storage)",
+        "Type": "AWS::S3::Bucket"
+      },
+      "RTzCurrentCryptography": {
+        "Children": [
+          "RCmpCurrentKms"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-current-cryptography",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzCurrentData": {
+        "Children": [
+          "RCmpCurrentS3Monolith"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-current-data",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzCurrentIdentity": {
+        "Children": [
+          "RCmpCurrentIam"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-current-identity",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzCurrentPublicEdge": {
+        "Children": [
+          "RCmpCurrentEdge"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-current-public-edge",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzCurrentSecurityOperations": {
+        "Children": [
+          "RCmpCurrentDetection",
+          "RCmpCurrentLogging"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-current-security-operations",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzCurrentWorkload": {
+        "Children": [
+          "RCmpCurrentCompute"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-current-workload",
+        "Type": "AWS::Diagram::Resource"
+      }
+    }
+  }
+}

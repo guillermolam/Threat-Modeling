@@ -47,3 +47,9 @@ variable "ami_name_filter" {
   type    = string
   default = "al2023-ami-*"
 }
+
+variable "use_native_instance_resource" {
+  description = "Create aws_instance directly. Keep false for Floci 1.6.0, whose clean EC2 lifecycle terminates the instance during provider creation."
+  type        = bool
+  default     = false
+}

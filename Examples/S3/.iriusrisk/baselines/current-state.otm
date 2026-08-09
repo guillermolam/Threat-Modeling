@@ -1,0 +1,121 @@
+otmVersion: 0.1.0
+project:
+  id: meridian-s3-study
+  name: Meridian S3 Study
+  description: Sanitized current-state architecture for the Meridian S3 teaching case.
+trustZones:
+  - id: f0ba7722-39b6-4c81-8290-a30a248bb8d9
+    name: Internet
+    risk:
+      trustRating: 10
+  - id: b61d6911-338d-46a8-9f39-8dcd24abfe91
+    name: Public Cloud
+    risk:
+      trustRating: 40
+  - id: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    name: AWS Cloud
+    risk:
+      trustRating: 60
+components:
+  - id: internet-client
+    name: Internet Client
+    type: CD-V2-WEB-CLIENT
+    parent:
+      trustZone: f0ba7722-39b6-4c81-8290-a30a248bb8d9
+    tags: [external-actor]
+  - id: partner-ingestion
+    name: Partner Ingestion Client
+    type: CD-V2-WEB-CLIENT
+    parent:
+      trustZone: f0ba7722-39b6-4c81-8290-a30a248bb8d9
+    tags: [partner]
+  - id: cloudfront-edge
+    name: CloudFront Edge
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent:
+      trustZone: b61d6911-338d-46a8-9f39-8dcd24abfe91
+    tags: [content-delivery]
+  - id: workload-compute
+    name: Application Compute
+    type: CD-V2-AWS-ECS-CLUSTER
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [application-runtime]
+  - id: instance-metadata
+    name: Instance Metadata Service
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [workload-identity]
+  - id: broad-workload-role
+    name: Shared Workload IAM Role
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [identity]
+  - id: s3-monolith
+    name: Monolithic Data Bucket
+    type: CD-V2-AWS-S3
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [public-content, user-generated-content, regulated-data]
+  - id: shared-kms
+    name: Shared KMS Key
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [cryptographic-key]
+  - id: management-logging
+    name: CloudTrail Management Events
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [audit]
+  - id: analytics-agent
+    name: Analytics Agent
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent:
+      trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    tags: [machine-learning-artificial-intelligence]
+dataflows:
+  - id: client-content-request
+    name: Request public content
+    source: internet-client
+    destination: cloudfront-edge
+  - id: edge-origin-read
+    name: Read origin object
+    source: cloudfront-edge
+    destination: s3-monolith
+  - id: partner-object-write
+    name: Write partner object
+    source: partner-ingestion
+    destination: s3-monolith
+  - id: application-object-access
+    name: Read and write application objects
+    source: workload-compute
+    destination: s3-monolith
+    bidirectional: true
+  - id: compute-metadata-request
+    name: Request workload credentials
+    source: workload-compute
+    destination: instance-metadata
+  - id: metadata-role-credentials
+    name: Obtain role credentials
+    source: instance-metadata
+    destination: broad-workload-role
+  - id: role-authorizes-storage
+    name: Authorize S3 operations
+    source: broad-workload-role
+    destination: s3-monolith
+  - id: bucket-key-use
+    name: Use shared encryption key
+    source: s3-monolith
+    destination: shared-kms
+  - id: management-audit
+    name: Record management activity
+    source: workload-compute
+    destination: management-logging
+  - id: agent-export-read
+    name: Read analytics exports
+    source: analytics-agent
+    destination: s3-monolith

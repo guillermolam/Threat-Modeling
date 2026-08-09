@@ -1,0 +1,401 @@
+{
+  "posture": "current-state",
+  "nodes": [
+    {
+      "id": "actor-customer",
+      "name": "Customer",
+      "kind": "actor",
+      "evidence": "Customers",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 542,
+        "end": 551,
+        "text": "Customers",
+        "context": "There's also the profile-picture upload. Customers upload avatars \u2014 same bucket, different prefix.",
+        "mentions": [
+          "actor-customer"
+        ]
+      }
+    },
+    {
+      "id": "cmp-s3-bucket",
+      "name": "Shared object bucket",
+      "kind": "datastore",
+      "evidence": "this bucket",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 332,
+        "end": 343,
+        "text": "this bucket",
+        "context": "Before anyone says the word \"threat\" \u2014 who or what talks to this bucket?",
+        "mentions": [
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "cmp-app-backend",
+      "name": "Application backend",
+      "kind": "process",
+      "evidence": "app backend",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 413,
+        "end": 424,
+        "text": "app backend",
+        "context": "Anonymous users for the public marketing assets, the app backend for customer records, and Sam's pipeline for policy deploys.",
+        "mentions": [
+          "cmp-app-backend"
+        ]
+      }
+    },
+    {
+      "id": "cmp-cicd-pipeline",
+      "name": "CI/CD pipeline",
+      "kind": "process",
+      "evidence": "Sam's pipeline",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 451,
+        "end": 465,
+        "text": "Sam's pipeline",
+        "context": "Anonymous users for the public marketing assets, the app backend for customer records, and Sam's pipeline for policy deploys.",
+        "mentions": [
+          "cmp-cicd-pipeline"
+        ]
+      }
+    },
+    {
+      "id": "cmp-cloudfront",
+      "name": "CloudFront distribution",
+      "kind": "process",
+      "evidence": "CloudFront",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 824,
+        "end": 834,
+        "text": "CloudFront",
+        "context": "No. Presigned PUT, the object sits there, gets served back through CloudFront.",
+        "mentions": [
+          "cmp-cloudfront"
+        ]
+      }
+    },
+    {
+      "id": "cmp-deploy-role",
+      "name": "Deployment role",
+      "kind": "security-service",
+      "evidence": "deploy role",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 1658,
+        "end": 1669,
+        "text": "deploy role",
+        "context": "Diego, walk me through the deploy role.",
+        "mentions": [
+          "cmp-deploy-role"
+        ]
+      }
+    },
+    {
+      "id": "cmp-analytics-job",
+      "name": "Analytics export reader",
+      "kind": "process",
+      "evidence": "analytics job",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 2344,
+        "end": 2357,
+        "text": "analytics job",
+        "context": "One more. The analytics job that reads the exports \u2014 does it check integrity and then read, or check once and read later?",
+        "mentions": [
+          "cmp-analytics-job"
+        ]
+      }
+    }
+  ],
+  "flows": [
+    {
+      "id": "rel-current-01",
+      "source": "actor-customer",
+      "target": "cmp-s3-bucket",
+      "predicate": "reads",
+      "data": "public marketing assets",
+      "protocol": "unknown",
+      "authentication": "anonymous",
+      "certainty": "confirmed",
+      "evidence": "Anonymous users for the public marketing assets",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 360,
+        "end": 407,
+        "text": "Anonymous users for the public marketing assets",
+        "context": "Anonymous users for the public marketing assets, the app backend for customer records, and Sam's pipeline for policy deploys.",
+        "mentions": [
+          "actor-customer",
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-02",
+      "source": "cmp-app-backend",
+      "target": "cmp-s3-bucket",
+      "predicate": "accesses",
+      "data": "customer records",
+      "protocol": "unknown",
+      "authentication": "unknown",
+      "certainty": "confirmed",
+      "evidence": "the app backend for customer records",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 409,
+        "end": 445,
+        "text": "the app backend for customer records",
+        "context": "Anonymous users for the public marketing assets, the app backend for customer records, and Sam's pipeline for policy deploys.",
+        "mentions": [
+          "cmp-app-backend",
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-03",
+      "source": "cmp-cicd-pipeline",
+      "target": "cmp-s3-bucket",
+      "predicate": "deploys-policy-to",
+      "data": "bucket policy",
+      "protocol": "unknown",
+      "authentication": "deployment role",
+      "certainty": "confirmed",
+      "evidence": "Sam's pipeline for policy deploys",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 451,
+        "end": 484,
+        "text": "Sam's pipeline for policy deploys",
+        "context": "Anonymous users for the public marketing assets, the app backend for customer records, and Sam's pipeline for policy deploys.",
+        "mentions": [
+          "cmp-cicd-pipeline",
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-04",
+      "source": "actor-customer",
+      "target": "cmp-s3-bucket",
+      "predicate": "uploads",
+      "data": "avatar image",
+      "protocol": "HTTPS/S3 PUT",
+      "authentication": "presigned URL",
+      "certainty": "confirmed",
+      "evidence": "Customers upload avatars",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 542,
+        "end": 566,
+        "text": "Customers upload avatars",
+        "context": "There's also the profile-picture upload. Customers upload avatars \u2014 same bucket, different prefix.",
+        "mentions": [
+          "actor-customer",
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-05",
+      "source": "cmp-s3-bucket",
+      "target": "cmp-cloudfront",
+      "predicate": "serves-through",
+      "data": "avatar image",
+      "protocol": "unknown",
+      "authentication": "unknown",
+      "certainty": "confirmed",
+      "evidence": "gets served back through CloudFront",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 799,
+        "end": 834,
+        "text": "gets served back through CloudFront",
+        "context": "No. Presigned PUT, the object sits there, gets served back through CloudFront.",
+        "mentions": [
+          "cmp-s3-bucket",
+          "cmp-cloudfront"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-06",
+      "source": "cmp-cloudfront",
+      "target": "actor-customer",
+      "predicate": "serves",
+      "data": "avatar image",
+      "protocol": "HTTPS",
+      "authentication": "unknown",
+      "certainty": "confirmed",
+      "evidence": "served back through CloudFront",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 804,
+        "end": 834,
+        "text": "served back through CloudFront",
+        "context": "No. Presigned PUT, the object sits there, gets served back through CloudFront.",
+        "mentions": [
+          "cmp-cloudfront",
+          "actor-customer"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-07",
+      "source": "cmp-cicd-pipeline",
+      "target": "cmp-deploy-role",
+      "predicate": "assumes",
+      "data": "deployment identity",
+      "protocol": "OIDC/STS",
+      "authentication": "OIDC federation",
+      "certainty": "confirmed",
+      "evidence": "OIDC-federated from GitHub Actions",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 1686,
+        "end": 1720,
+        "text": "OIDC-federated from GitHub Actions",
+        "context": "OIDC-federated from GitHub Actions, scoped to this bucket's ARN.",
+        "mentions": [
+          "cmp-cicd-pipeline",
+          "cmp-deploy-role"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-08",
+      "source": "cmp-deploy-role",
+      "target": "cmp-s3-bucket",
+      "predicate": "may-modify-policy-on",
+      "data": "bucket policy",
+      "protocol": "AWS API",
+      "authentication": "IAM role",
+      "certainty": "unverified",
+      "evidence": "Can it modify *any* bucket policy in the account?",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 1789,
+        "end": 1838,
+        "text": "Can it modify *any* bucket policy in the account?",
+        "context": "Scoped, or wildcarded? Can it modify *any* bucket policy in the account?",
+        "mentions": [
+          "cmp-deploy-role",
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-09",
+      "source": "cmp-analytics-job",
+      "target": "cmp-s3-bucket",
+      "predicate": "requests-exports-from",
+      "data": "object list and downloads",
+      "protocol": "HTTPS/S3",
+      "authentication": "unknown",
+      "certainty": "confirmed",
+      "evidence": "The analytics job that reads the exports",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 2340,
+        "end": 2380,
+        "text": "The analytics job that reads the exports",
+        "context": "One more. The analytics job that reads the exports \u2014 does it check integrity and then read, or check once and read later?",
+        "mentions": [
+          "cmp-analytics-job",
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "rel-current-10",
+      "source": "cmp-s3-bucket",
+      "target": "cmp-analytics-job",
+      "predicate": "returns",
+      "data": "export files",
+      "protocol": "HTTPS/S3",
+      "authentication": "unknown",
+      "certainty": "confirmed",
+      "evidence": "downloads each file in a loop.",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 2514,
+        "end": 2544,
+        "text": "downloads each file in a loop.",
+        "context": "It lists objects, validates the manifest, then downloads each file in a loop. On a big export that could be a few minutes between validate and read.",
+        "mentions": [
+          "cmp-s3-bucket",
+          "cmp-analytics-job"
+        ]
+      }
+    }
+  ],
+  "uncertainties": [
+    {
+      "id": "unc-current-01",
+      "subject": "cmp-s3-bucket",
+      "property": "upload scanning",
+      "state": "confirmed-absent",
+      "evidence": null,
+      "evidence_missing": true,
+      "evidence_span": null
+    },
+    {
+      "id": "unc-current-02",
+      "subject": "cmp-s3-bucket",
+      "property": "avatar retention",
+      "state": "unknown",
+      "evidence": "I don't think retention was ever defined for that prefix.",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 1403,
+        "end": 1460,
+        "text": "I don't think retention was ever defined for that prefix.",
+        "context": "I'd have to check. I don't think retention was ever defined for that prefix.",
+        "mentions": [
+          "cmp-s3-bucket"
+        ]
+      }
+    },
+    {
+      "id": "unc-current-03",
+      "subject": "cmp-deploy-role",
+      "property": "resource scope",
+      "state": "unverified",
+      "evidence": "I'd have to look at the JSON.",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 1857,
+        "end": 1886,
+        "text": "I'd have to look at the JSON.",
+        "context": "...I'd have to look at the JSON. I *think* it's scoped, but I've seen wildcards on other buckets.",
+        "mentions": [
+          "cmp-deploy-role"
+        ]
+      }
+    },
+    {
+      "id": "unc-current-04",
+      "subject": "cmp-analytics-job",
+      "property": "version-pinned read",
+      "state": "confirmed-absent",
+      "evidence": "validates the manifest, then downloads each file in a loop.",
+      "evidence_missing": false,
+      "evidence_span": {
+        "start": 2485,
+        "end": 2544,
+        "text": "validates the manifest, then downloads each file in a loop.",
+        "context": "It lists objects, validates the manifest, then downloads each file in a loop. On a big export that could be a few minutes between validate and read.",
+        "mentions": [
+          "cmp-analytics-job"
+        ]
+      }
+    }
+  ]
+}

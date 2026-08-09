@@ -81,6 +81,8 @@ resource "aws_cloudfront_origin_access_control" "this" {
 }
 
 resource "aws_cloudfront_distribution" "this" {
+  count = var.use_native_distribution_resource ? 1 : 0
+
   enabled = true
   comment = "${var.name_prefix} - ${var.posture} posture"
 
@@ -145,4 +147,27 @@ resource "aws_cloudfront_distribution" "this" {
   tags = merge(var.tags, {
     Name = "${var.name_prefix}-edge"
   })
+}
+
+# Floci 1.6.0 advertises CloudFront but returns an empty response for the
+# distribution APIs. The AWS provider consequently crashes while decoding the
+# create response. Keep the edge in state with deterministic local identifiers
+# so the OAC -> distribution ARN -> bucket-policy wiring remains executable and
+# inspectable. Set use_native_distribution_resource=true against real AWS.
+resource "terraform_data" "floci_distribution" {
+  count = var.use_native_distribution_resource ? 0 : 1
+
+  input = {
+    id                 = "FLOCI-${var.name_prefix}"
+    arn                = "arn:aws:cloudfront::000000000000:distribution/FLOCI-${var.name_prefix}"
+    domain_name        = "${var.name_prefix}.cloudfront.local"
+    origin_bucket_name = var.origin_bucket_name
+    oac_enabled        = var.enable_oac
+    waf_enabled        = var.enable_waf
+    ugc_behavior       = var.separate_ugc_behavior
+    # Preserve the same threat-model identity contract used by native AWS
+    # resources. The architecture compiler reads these tags only because this
+    # terraform_data resource is the explicit Floci substitute for CloudFront.
+    tags = var.tags
+  }
 }

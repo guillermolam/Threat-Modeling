@@ -1,0 +1,3 @@
+# Suppressions, disabled rules, severity remaps, and ignore rules are forbidden.
+# The command line selects the pedantic persona and also passes --no-ignores.
+rules: {}

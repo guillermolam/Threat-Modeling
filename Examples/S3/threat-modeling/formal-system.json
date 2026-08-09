@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "system_id": "meridian-threat-modeling-fs",
+  "completeness_property": "Every reviewed atomic assertion in scope derives exactly one accepted fact or one explicit review-queue item.",
+  "scope": {
+    "sources": [
+      "reviewed workshop transcript fragments",
+      "reviewed architecture model",
+      "OpenTofu and Terragrunt implementation evidence",
+      "Floci verification evidence"
+    ],
+    "closed_world": false,
+    "non_claim": "The system does not prove that the sources describe every real-world component, flow, threat, or control."
+  },
+  "atomic_fact_classes": {
+    "relation": "A directed interaction between two deployed-system entities.",
+    "attribute": "A property or qualifier of one deployed-system entity.",
+    "uncertainty": "An unknown, unverified, absent, contradictory, or unresolved system state."
+  },
+  "entity_types": {
+    "actor": "A human role that intentionally interacts with the system.",
+    "external-entity": "A person, organization, or system outside the modeled system that exchanges data with it.",
+    "process": "A running computation that transforms, routes, or acts on data.",
+    "datastore": "A persistent or durable location where data rests.",
+    "container": "A logical or deployment grouping that owns lower-level elements.",
+    "interface": "An exposed interaction surface whose clients may not be fully known at design time.",
+    "security-service": "An identity or security capability that authorizes, filters, encrypts, or audits behavior.",
+    "block": "A control-enforcement component placed on a path.",
+    "trust-boundary": "A boundary between zones with different trust assumptions; it is not a data-processing node."
+  },
+  "relationship_types": {
+    "directed-flow": "One source-to-destination transfer represented by one directed edge.",
+    "bidirectional-flow": "Two independent directed flows with separate data, protocol, authentication, and evidence.",
+    "initiates": "Metadata identifying which endpoint starts a directed interaction.",
+    "contains": "A parent-child relationship; each child has at most one immediate parent at a given abstraction level.",
+    "crosses-trust-boundary": "A derived property when a flow's endpoints belong to different trust zones."
+  },
+  "certainty_states": {
+    "confirmed": "Direct evidence supports the positive assertion.",
+    "confirmed-absent": "Direct evidence supports the absence of the property or control.",
+    "unknown": "The source explicitly lacks the answer or required evidence is missing.",
+    "unverified": "A claim exists but has not been checked against implementation evidence.",
+    "contradictory": "Reviewed sources make incompatible claims.",
+    "not-applicable": "A completeness obligation was reviewed and does not apply, with rationale."
+  },
+  "evidence_contract": {
+    "maximum_words": 25,
+    "exact_normalized_substring": true,
+    "span_offsets": "codepoint offsets into the scoped transcript section",
+    "context_required": true,
+    "resolved_mentions_required": true,
+    "missing_evidence_outcome": "review_queue",
+    "speaker_names_are_entities": false
+  },
+  "predicate_contracts": {
+    "reads": {"subject_kinds": ["actor", "external-entity", "process"], "object_kinds": ["datastore"]},
+    "accesses": {"subject_kinds": ["process"], "object_kinds": ["datastore", "interface"]},
+    "deploys-policy-to": {"subject_kinds": ["process"], "object_kinds": ["datastore", "security-service"]},
+    "uploads": {"subject_kinds": ["actor", "external-entity"], "object_kinds": ["datastore", "interface"]},
+    "serves-through": {"subject_kinds": ["datastore", "process"], "object_kinds": ["process", "block"]},
+    "serves": {"subject_kinds": ["process", "datastore"], "object_kinds": ["actor", "external-entity", "process"]},
+    "assumes": {"subject_kinds": ["actor", "external-entity", "process"], "object_kinds": ["security-service"]},
+    "may-modify-policy-on": {"subject_kinds": ["security-service"], "object_kinds": ["datastore", "security-service"]},
+    "requests-exports-from": {"subject_kinds": ["process"], "object_kinds": ["datastore", "interface"]},
+    "returns": {"subject_kinds": ["datastore", "interface", "process"], "object_kinds": ["actor", "external-entity", "process"]}
+  },
+  "derivation_rules": [
+    {"id": "DER-001", "rule": "Resolve reviewed aliases to a known entity before classification or embedding."},
+    {"id": "DER-002", "rule": "Classify each atomic fragment as relation, attribute, or uncertainty using a closed enum."},
+    {"id": "DER-003", "rule": "Resolve relation endpoints and predicate only from closed enums; an unresolved endpoint cannot create a node."},
+    {"id": "DER-004", "rule": "Represent a bidirectional exchange as two directed relations."},
+    {"id": "DER-005", "rule": "Derive boundary crossing from endpoint trust zones rather than conversational wording alone."},
+    {"id": "DER-006", "rule": "Code copies IDs, labels, evidence, data, protocol, authentication, and certainty; the model never copies them."},
+    {"id": "DER-007", "rule": "Two serial model calls must agree exactly; disagreement produces an unknown review item."},
+    {"id": "DER-008", "rule": "A fact is accepted only after evidence, enum, reference, direction, and reproducibility checks pass."}
+  ],
+  "completeness_rules": [
+    {"id": "IC-001", "category": "interface", "obligation": "Inventory every route and interface, including legacy paths.", "failure_state": "gap"},
+    {"id": "IC-002", "category": "interface", "obligation": "Map every route to a concrete handler or implementation.", "failure_state": "gap"},
+    {"id": "IC-003", "category": "interface", "obligation": "Record and verify every path, query, header, and body input constraint.", "failure_state": "gap"},
+    {"id": "IC-004", "category": "interface", "obligation": "Record every enabled method or operation for each interface.", "failure_state": "gap"},
+    {"id": "DF-001", "category": "data-flow", "obligation": "Trace every input from entry to every known destination.", "failure_state": "unknown"},
+    {"id": "DF-002", "category": "data-flow", "obligation": "Define retention, deletion, or another exit for every persistent data path.", "failure_state": "gap"},
+    {"id": "DF-003", "category": "data-flow", "obligation": "Classify every data element and propagated identifier.", "failure_state": "gap"},
+    {"id": "DF-004", "category": "data-flow", "obligation": "Record transformations, validation, redaction, and sanitization on each flow.", "failure_state": "gap"},
+    {"id": "CF-001", "category": "call-flow", "obligation": "Trace each security-relevant operation through its complete call chain.", "failure_state": "unknown"},
+    {"id": "CF-002", "category": "call-flow", "obligation": "Locate authentication and authorization checks on each protected operation.", "failure_state": "gap"},
+    {"id": "CF-003", "category": "call-flow", "obligation": "Model error, timeout, retry, and partial-failure behavior.", "failure_state": "gap"},
+    {"id": "CF-004", "category": "call-flow", "obligation": "Record direct and transitive downstream dependencies.", "failure_state": "unknown"},
+    {"id": "TB-001", "category": "trust-boundary", "obligation": "Mark every untrusted entry point.", "failure_state": "gap"},
+    {"id": "TB-002", "category": "trust-boundary", "obligation": "Draw boundaries around resources with distinct trust assumptions.", "failure_state": "gap"},
+    {"id": "TB-003", "category": "trust-boundary", "obligation": "Mark every flow that crosses a trust boundary, including intra-cloud crossings.", "failure_state": "gap"},
+    {"id": "TB-004", "category": "trust-boundary", "obligation": "Link each claimed boundary protection to verified implementation evidence.", "failure_state": "unverified"},
+    {"id": "DS-001", "category": "data-store", "obligation": "Record every ingress and egress path for each datastore.", "failure_state": "unknown"},
+    {"id": "DS-002", "category": "data-store", "obligation": "Attach a reviewed data classification to every datastore.", "failure_state": "gap"},
+    {"id": "DS-003", "category": "data-store", "obligation": "Record encryption, versioning, backup, retention, and recovery posture.", "failure_state": "gap"},
+    {"id": "XV-001", "category": "cross-validation", "obligation": "Link every reviewed DFD flow to implementation evidence or an explicit unknown.", "failure_state": "gap"},
+    {"id": "XV-002", "category": "cross-validation", "obligation": "Link every sensitive-data protection claim to an enforcing control.", "failure_state": "blocking"},
+    {"id": "XV-003", "category": "cross-validation", "obligation": "Prove that each claimed control covers the exact modeled path.", "failure_state": "gap"},
+    {"id": "QG-001", "category": "quality-gate", "obligation": "Assess 100% of blocking obligations and at least 95% of all applicable obligations.", "failure_state": "blocking"}
+  ],
+  "otm_contract": {
+    "component_fields": ["id", "name", "type", "parent.trustZone"],
+    "dataflow_fields": ["id", "source", "destination", "assets"],
+    "risk_fields": ["trustZone.risk.trustRating", "asset.risk.confidentiality", "asset.risk.integrity", "asset.risk.availability", "threat.risk.likelihood", "threat.risk.impact", "mitigation.riskReduction", "risk.comment"],
+    "referential_rules": [
+      "Every dataflow source and destination resolves to exactly one component.",
+      "Every component has at most one parent at one abstraction level.",
+      "Processed and stored assets are modeled separately.",
+      "Threats attach to the component or dataflow where the risky behavior occurs.",
+      "A planned mitigation is required, never implemented, until evidence verifies it."
+    ]
+  },
+  "admission": {
+    "outcomes": ["accepted", "review_queue"],
+    "review_reasons": [
+      "evidence-missing",
+      "classification-nonreproducible",
+      "classification-mismatch",
+      "slots-nonreproducible",
+      "unresolved-entity",
+      "direction-contract",
+      "slot-mismatch",
+      "schema-invalid",
+      "reference-invalid",
+      "completeness-gap"
+    ],
+    "silent_drop_allowed": false,
+    "automatic_repair_allowed": false
+  }
+}

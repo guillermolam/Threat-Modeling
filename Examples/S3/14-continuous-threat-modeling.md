@@ -67,6 +67,10 @@ flowchart TD
 
 > 💡 **Bridge.** The second branch is where this methodology quietly earns its value. Most changes aren't findings — they're things that should update a runbook, alter a deployment assumption, or generate a test. Routing them somewhere useful instead of discarding them is what turns threat modeling from an event into a practice. **With time, patterns emerge in the queue and the decisions get faster.**
 
+### IriusRisk as the living-model system
+
+One IriusRisk project holds named snapshots of the vulnerable and hardened architecture. The curator snapshots before replacing obsolete components, imports the next architecture, answers questionnaires from reviewed OpenTofu/Terragrunt evidence, and compares versions. Generated threats and controls are reconciled through [`iriusrisk/traceability.yaml`](iriusrisk/traceability.yaml); they do not replace manual findings. A Floci `GAP` remains `unknown/pending`, never evidence that a control is implemented. See [18](18-iriusrisk-s3-lab.md).
+
 ### 🏢 Meridian's setup
 
 | Element | Assignment |

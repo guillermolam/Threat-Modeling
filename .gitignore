@@ -26,3 +26,17 @@
 .terraform.lock.hcl
 Examples/S3/infra/.tfstate/
 .threatforest/.env
+
+# Repository-local pinned tool binaries
+.tools/
+
+# Repository-owned local inference runtime state and debug logs
+.tools/runtime/
+
+# Python unit-test bytecode
+__pycache__/
+*.py[cod]
+
+# Architecture evidence: raw plans/logs are sensitive and always ephemeral.
+Examples/S3/architecture/.evidence/
+Examples/S3/architecture/**/*.tfplan

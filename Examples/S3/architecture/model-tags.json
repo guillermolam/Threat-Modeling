@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "required_tag_keys": [
+    "tm:component-id",
+    "tm:data-classification",
+    "tm:environment",
+    "tm:family",
+    "tm:findings",
+    "tm:flows",
+    "tm:owner",
+    "tm:purpose",
+    "tm:source-unit",
+    "tm:trust-zone"
+  ],
+  "actors": {
+    "actor-analytics-agent": {
+      "name": "Autonomous analytics agent",
+      "trust_zone": "tz-external-automation"
+    },
+    "actor-cicd": {
+      "name": "CI/CD pipeline",
+      "trust_zone": "tz-external-automation"
+    },
+    "actor-customer": {
+      "name": "Customer browser",
+      "trust_zone": "tz-public-internet"
+    },
+    "actor-partner": {
+      "name": "Cross-account partner",
+      "trust_zone": "tz-external-partner"
+    }
+  },
+  "postures": {
+    "current-state": {
+      "display_name": "Meridian S3 current state",
+      "short": "cs",
+      "floci_gaps": [
+        {
+          "id": "GAP-FLOCI-S3-POLICY",
+          "summary": "Unsigned S3 data-plane policy evaluation is incomplete"
+        },
+        {
+          "id": "GAP-FLOCI-CLOUDFRONT",
+          "summary": "CloudFront distribution responses are incomplete"
+        },
+        {
+          "id": "GAP-FLOCI-IMDS",
+          "summary": "EC2 instance lifecycle and metadata options are not emulated faithfully"
+        }
+      ],
+      "units": {
+        "compute": {
+          "component_id": "cmp-current-compute",
+          "family": "compute",
+          "trust_zone": "tz-current-workload",
+          "purpose": "application-runtime",
+          "owner": "application-platform",
+          "data_classification": "mixed",
+          "findings": ["F-13"],
+          "flow_ids": ["flow-current-02", "flow-current-03"],
+          "depends_on": ["iam"]
+        },
+        "detection": {
+          "component_id": "cmp-current-detection",
+          "family": "detection",
+          "trust_zone": "tz-current-security-operations",
+          "purpose": "security-alerting",
+          "owner": "security-operations",
+          "data_classification": "security-telemetry",
+          "findings": ["LOG-1"],
+          "flow_ids": ["flow-current-09"],
+          "depends_on": []
+        },
+        "edge": {
+          "component_id": "cmp-current-edge",
+          "family": "edge",
+          "trust_zone": "tz-current-public-edge",
+          "purpose": "content-delivery",
+          "owner": "application-platform",
+          "data_classification": "mixed",
+          "findings": ["F-03"],
+          "flow_ids": ["flow-current-01", "flow-current-02"],
+          "depends_on": ["s3-monolith"]
+        },
+        "iam": {
+          "component_id": "cmp-current-iam",
+          "family": "iam",
+          "trust_zone": "tz-current-identity",
+          "purpose": "workload-and-human-identities",
+          "owner": "identity-platform",
+          "data_classification": "authorization-metadata",
+          "findings": ["F-09", "F-13", "F-14", "F-15", "F-18", "F-19"],
+          "flow_ids": ["flow-current-04", "flow-current-05", "flow-current-06", "flow-current-07"],
+          "depends_on": ["s3-monolith"]
+        },
+        "kms": {
+          "component_id": "cmp-current-kms",
+          "family": "kms",
+          "trust_zone": "tz-current-cryptography",
+          "purpose": "mixed-data-encryption",
+          "owner": "security-platform",
+          "data_classification": "mixed-worst-case-regulated",
+          "findings": ["ENC-2", "ENC-3", "ENC-4", "ENC-7", "ENC-8"],
+          "flow_ids": ["flow-current-08"],
+          "depends_on": []
+        },
+        "logging": {
+          "component_id": "cmp-current-logging",
+          "family": "logging",
+          "trust_zone": "tz-current-security-operations",
+          "purpose": "audit-and-access-logging",
+          "owner": "security-operations",
+          "data_classification": "security-telemetry",
+          "findings": ["LOG-1"],
+          "flow_ids": ["flow-current-09"],
+          "depends_on": []
+        },
+        "s3-monolith": {
+          "component_id": "cmp-current-s3-monolith",
+          "family": "s3",
+          "trust_zone": "tz-current-data",
+          "purpose": "mixed-object-storage",
+          "owner": "data-platform",
+          "data_classification": "mixed-worst-case-regulated",
+          "findings": ["F-01", "F-02", "F-03", "F-11", "ENC-1", "ENC-2", "ENC-5", "ENC-6", "LOG-1", "P-01"],
+          "flow_ids": ["flow-current-01", "flow-current-03", "flow-current-05", "flow-current-07", "flow-current-08", "flow-current-09"],
+          "depends_on": ["kms", "logging"]
+        }
+      },
+      "flows": [
+        {"id": "flow-current-01", "source": "actor-customer", "target": "cmp-current-s3-monolith", "protocol": "HTTPS/S3", "data": "public assets and exposed objects", "classification": "mixed-worst-case-regulated", "authentication": "anonymous"},
+        {"id": "flow-current-02", "source": "actor-customer", "target": "cmp-current-compute", "protocol": "HTTPS", "data": "application requests and user-controlled URLs", "classification": "mixed", "authentication": "application session"},
+        {"id": "flow-current-03", "source": "cmp-current-compute", "target": "cmp-current-s3-monolith", "protocol": "HTTPS/S3", "data": "application objects", "classification": "mixed-worst-case-regulated", "authentication": "instance profile"},
+        {"id": "flow-current-04", "source": "actor-partner", "target": "cmp-current-iam", "protocol": "STS", "data": "role assumption", "classification": "authorization-metadata", "authentication": "cross-account role"},
+        {"id": "flow-current-05", "source": "cmp-current-iam", "target": "cmp-current-s3-monolith", "protocol": "HTTPS/S3", "data": "partner uploads and cross-prefix reads", "classification": "regulated-pii", "authentication": "IAM role"},
+        {"id": "flow-current-06", "source": "actor-cicd", "target": "cmp-current-iam", "protocol": "OIDC/STS", "data": "deployment identity", "classification": "authorization-metadata", "authentication": "broad OIDC subject"},
+        {"id": "flow-current-07", "source": "actor-analytics-agent", "target": "cmp-current-s3-monolith", "protocol": "HTTPS/S3", "data": "analytics reads and writes", "classification": "regulated-pii", "authentication": "autonomous IAM role"},
+        {"id": "flow-current-08", "source": "cmp-current-s3-monolith", "target": "cmp-current-kms", "protocol": "KMS", "data": "encryption operations", "classification": "mixed-worst-case-regulated", "authentication": "AWS-managed key"},
+        {"id": "flow-current-09", "source": "cmp-current-s3-monolith", "target": "cmp-current-logging", "protocol": "AWS logging", "data": "management and access logs", "classification": "security-telemetry", "authentication": "service principal"}
+      ]
+    },
+    "target-state": {
+      "display_name": "Meridian S3 target state",
+      "short": "ts",
+      "floci_gaps": [
+        {
+          "id": "GAP-FLOCI-S3-POLICY",
+          "summary": "Unsigned S3 data-plane policy evaluation is incomplete"
+        },
+        {
+          "id": "GAP-FLOCI-CLOUDFRONT",
+          "summary": "CloudFront distribution responses are incomplete"
+        },
+        {
+          "id": "GAP-FLOCI-IMDS",
+          "summary": "EC2 instance lifecycle and metadata options are not emulated faithfully"
+        },
+        {
+          "id": "GAP-FLOCI-ACCOUNT-BOUNDARIES",
+          "summary": "The emulator is single-account"
+        }
+      ],
+      "units": {
+        "compute": {"component_id": "cmp-target-compute", "family": "compute", "trust_zone": "tz-target-workload", "purpose": "application-runtime", "owner": "application-platform", "data_classification": "mixed", "findings": ["F-13", "F-20"], "flow_ids": ["flow-target-02", "flow-target-03", "flow-target-04"], "depends_on": ["iam"]},
+        "detection": {"component_id": "cmp-target-detection", "family": "detection", "trust_zone": "tz-target-security-operations", "purpose": "security-alerting", "owner": "security-operations", "data_classification": "security-telemetry", "findings": ["F-01", "F-02", "F-09", "F-14", "ENC-6", "ENC-7", "ENC-8", "LOG-1"], "flow_ids": ["flow-target-12"], "depends_on": []},
+        "edge": {"component_id": "cmp-target-edge", "family": "edge", "trust_zone": "tz-target-public-edge", "purpose": "oac-and-waf-content-delivery", "owner": "application-platform", "data_classification": "public-and-user-content", "findings": ["F-01", "F-03", "F-12"], "flow_ids": ["flow-target-01", "flow-target-02", "flow-target-08"], "depends_on": []},
+        "iam": {"component_id": "cmp-target-iam", "family": "iam", "trust_zone": "tz-target-identity", "purpose": "scoped-workload-and-human-identities", "owner": "identity-platform", "data_classification": "authorization-metadata", "findings": ["F-09", "F-13", "F-14", "F-15", "F-18", "F-19"], "flow_ids": ["flow-target-05", "flow-target-06", "flow-target-07", "flow-target-10"], "depends_on": []},
+        "kms-public": {"component_id": "cmp-target-kms-public", "family": "kms", "trust_zone": "tz-target-cryptography", "purpose": "public-assets-encryption", "owner": "security-platform", "data_classification": "public-no-pii", "findings": ["ENC-2"], "flow_ids": ["flow-target-11"], "depends_on": []},
+        "kms-regulated": {"component_id": "cmp-target-kms-regulated", "family": "kms", "trust_zone": "tz-target-cryptography", "purpose": "regulated-data-encryption", "owner": "security-platform", "data_classification": "regulated-pii", "findings": ["ENC-2", "ENC-3", "ENC-4", "ENC-5", "ENC-7", "ENC-8"], "flow_ids": ["flow-target-10"], "depends_on": ["iam"]},
+        "kms-ugc": {"component_id": "cmp-target-kms-ugc", "family": "kms", "trust_zone": "tz-target-cryptography", "purpose": "user-content-encryption", "owner": "security-platform", "data_classification": "untrusted-user-content", "findings": ["ENC-2", "ENC-3", "ENC-4", "ENC-5", "ENC-7", "ENC-8"], "flow_ids": ["flow-target-09"], "depends_on": ["iam"]},
+        "logging": {"component_id": "cmp-target-logging", "family": "logging", "trust_zone": "tz-target-security-operations", "purpose": "audit-and-data-event-logging", "owner": "security-operations", "data_classification": "security-telemetry", "findings": ["LOG-1"], "flow_ids": ["flow-target-12"], "depends_on": []},
+        "s3-public": {"component_id": "cmp-target-s3-public", "family": "s3", "trust_zone": "tz-target-public-data", "purpose": "public-assets", "owner": "data-platform", "data_classification": "public-no-pii", "findings": ["F-01", "F-02", "F-03", "ENC-1", "ENC-6"], "flow_ids": ["flow-target-01", "flow-target-11", "flow-target-12"], "depends_on": ["edge", "logging"]},
+        "s3-regulated": {"component_id": "cmp-target-s3-regulated", "family": "s3", "trust_zone": "tz-target-regulated-data", "purpose": "customer-exports", "owner": "data-platform", "data_classification": "regulated-pii", "findings": ["F-07", "F-11", "F-14", "ENC-1", "ENC-5", "ENC-6", "LOG-1", "P-01"], "flow_ids": ["flow-target-03", "flow-target-06", "flow-target-10", "flow-target-12"], "depends_on": ["iam", "kms-regulated", "logging"]},
+        "s3-ugc": {"component_id": "cmp-target-s3-ugc", "family": "s3", "trust_zone": "tz-target-published-data", "purpose": "user-content", "owner": "data-platform", "data_classification": "public-but-user-supplied", "findings": ["F-07", "F-11", "F-12", "ENC-1", "ENC-5", "ENC-6", "LOG-1", "P-01"], "flow_ids": ["flow-target-04", "flow-target-08", "flow-target-09", "flow-target-12"], "depends_on": ["edge", "iam", "kms-ugc", "logging"]},
+        "s3-ugc-quarantine": {"component_id": "cmp-target-s3-ugc-quarantine", "family": "s3", "trust_zone": "tz-target-quarantine", "purpose": "ugc-quarantine", "owner": "content-safety", "data_classification": "untrusted-user-content", "findings": ["F-12", "ENC-1", "ENC-5", "ENC-6", "LOG-1", "P-01"], "flow_ids": ["flow-target-08", "flow-target-09", "flow-target-12"], "depends_on": ["iam", "kms-ugc", "logging"]}
+      },
+      "flows": [
+        {"id": "flow-target-01", "source": "actor-customer", "target": "cmp-target-edge", "protocol": "HTTPS", "data": "public asset requests", "classification": "public-no-pii", "authentication": "anonymous"},
+        {"id": "flow-target-02", "source": "cmp-target-edge", "target": "cmp-target-compute", "protocol": "HTTPS", "data": "application requests", "classification": "mixed", "authentication": "edge policy"},
+        {"id": "flow-target-03", "source": "cmp-target-compute", "target": "cmp-target-s3-regulated", "protocol": "HTTPS/S3", "data": "version-pinned customer exports", "classification": "regulated-pii", "authentication": "scoped instance profile"},
+        {"id": "flow-target-04", "source": "cmp-target-compute", "target": "cmp-target-s3-ugc", "protocol": "HTTPS/S3", "data": "approved user content", "classification": "public-but-user-supplied", "authentication": "scoped instance profile"},
+        {"id": "flow-target-05", "source": "actor-partner", "target": "cmp-target-iam", "protocol": "STS", "data": "role assumption with external ID", "classification": "authorization-metadata", "authentication": "scoped cross-account role"},
+        {"id": "flow-target-06", "source": "cmp-target-iam", "target": "cmp-target-s3-regulated", "protocol": "HTTPS/S3", "data": "write-only partner ingestion", "classification": "regulated-pii", "authentication": "prefix-scoped IAM role"},
+        {"id": "flow-target-07", "source": "actor-cicd", "target": "cmp-target-iam", "protocol": "OIDC/STS", "data": "deployment identity", "classification": "authorization-metadata", "authentication": "branch-scoped OIDC subject"},
+        {"id": "flow-target-08", "source": "actor-customer", "target": "cmp-target-s3-ugc-quarantine", "protocol": "HTTPS/S3", "data": "untrusted uploads", "classification": "untrusted-user-content", "authentication": "presigned upload"},
+        {"id": "flow-target-09", "source": "cmp-target-s3-ugc-quarantine", "target": "cmp-target-s3-ugc", "protocol": "S3 promotion", "data": "scanned and re-encoded content", "classification": "public-but-user-supplied", "authentication": "promotion role"},
+        {"id": "flow-target-10", "source": "actor-analytics-agent", "target": "cmp-target-s3-regulated", "protocol": "HTTPS/S3 and KMS", "data": "read-only analytics inputs", "classification": "regulated-pii", "authentication": "read-only autonomous role"},
+        {"id": "flow-target-11", "source": "cmp-target-s3-public", "target": "cmp-target-kms-public", "protocol": "S3 encryption", "data": "public assets", "classification": "public-no-pii", "authentication": "service principal"},
+        {"id": "flow-target-12", "source": "cmp-target-s3-regulated", "target": "cmp-target-logging", "protocol": "CloudTrail data events", "data": "object-level audit telemetry", "classification": "security-telemetry", "authentication": "service principal"}
+      ]
+    }
+  }
+}

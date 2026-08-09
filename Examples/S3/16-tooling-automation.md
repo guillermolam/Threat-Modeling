@@ -42,7 +42,8 @@ flowchart TD
 | **Threagile** | From code (YAML) | Describe the model in YAML, get risk rules applied and reports out |
 | **OWASP Threat Dragon** | Diagramming + rules | Free, open source, browser or desktop. Good starting point |
 | **Microsoft Threat Modeling Tool** | Diagramming + rules | Implements STRIDE per Interaction. Windows, free |
-| **IriusRisk / SD Elements / ThreatModeler / Tutamen** | Commercial platforms | Threat libraries, workflow, integration. ThreatModeler notably uses PFDs as its primary model type |
+| **IriusRisk** | Commercial platform | Architecture-only OTM import, rules-generated threats and controls, questionnaires, reporting, and project versions; see [17–19](17-iriusrisk-foundations.md) |
+| **SD Elements / ThreatModeler / Tutamen** | Commercial platforms | Threat libraries and workflow. ThreatModeler notably uses PFDs as its primary model type |
 | **CAIRIS** | Research/usability-focused | Design + security + usability together |
 | **Threat-Modeling.com tool** | Browser-based | Free; DFD + STRIDE-oriented workflow |
 

@@ -1,0 +1,49 @@
+@startuml
+' Generated from architecture/model-tags.json; do not edit by hand.
+' Workshop evidence: B-traceability-log.md, Session Q&A #1 and #2.
+left to right direction
+!pragma layout smetana
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam ArrowColor #475569
+skinparam packageBorderColor #64748b
+skinparam packageBackgroundColor #f8fafc
+package "tz-current-cryptography" {
+  component "cmp-current-kms\nkms: mixed-data-encryption" as n_cmp_current_kms #e0f2fe
+}
+package "tz-current-data" {
+  database "cmp-current-s3-monolith\ns3-monolith: mixed-object-storage" as n_cmp_current_s3_monolith #ecfdf5
+}
+package "tz-current-identity" {
+  component "cmp-current-iam\niam: workload-and-human-identities" as n_cmp_current_iam #e0f2fe
+}
+package "tz-current-public-edge" {
+  component "cmp-current-edge\nedge: content-delivery" as n_cmp_current_edge #e0f2fe
+}
+package "tz-current-security-operations" {
+  component "cmp-current-detection\ndetection: security-alerting" as n_cmp_current_detection #e0f2fe
+  database "cmp-current-logging\nlogging: audit-and-access-logging" as n_cmp_current_logging #ecfdf5
+}
+package "tz-current-workload" {
+  component "cmp-current-compute\ncompute: application-runtime" as n_cmp_current_compute #e0f2fe
+}
+package "tz-external-automation" {
+  rectangle "actor-analytics-agent\nAutonomous analytics agent" as n_actor_analytics_agent #fff7ed
+  rectangle "actor-cicd\nCI/CD pipeline" as n_actor_cicd #fff7ed
+}
+package "tz-external-partner" {
+  rectangle "actor-partner\nCross-account partner" as n_actor_partner #fff7ed
+}
+package "tz-public-internet" {
+  rectangle "actor-customer\nCustomer browser" as n_actor_customer #fff7ed
+}
+n_actor_customer --> n_cmp_current_s3_monolith : flow-current-01\nHTTPS/S3: public assets and exposed objects\nauth: anonymous
+n_actor_customer --> n_cmp_current_compute : flow-current-02\nHTTPS: application requests and user-controlled URLs\nauth: application session
+n_cmp_current_compute --> n_cmp_current_s3_monolith : flow-current-03\nHTTPS/S3: application objects\nauth: instance profile
+n_actor_partner --> n_cmp_current_iam : flow-current-04\nSTS: role assumption\nauth: cross-account role
+n_cmp_current_iam --> n_cmp_current_s3_monolith : flow-current-05\nHTTPS/S3: partner uploads and cross-prefix reads\nauth: IAM role
+n_actor_cicd --> n_cmp_current_iam : flow-current-06\nOIDC/STS: deployment identity\nauth: broad OIDC subject
+n_actor_analytics_agent --> n_cmp_current_s3_monolith : flow-current-07\nHTTPS/S3: analytics reads and writes\nauth: autonomous IAM role
+n_cmp_current_s3_monolith --> n_cmp_current_kms : flow-current-08\nKMS: encryption operations\nauth: AWS-managed key
+n_cmp_current_s3_monolith --> n_cmp_current_logging : flow-current-09\nAWS logging: management and access logs\nauth: service principal
+@enduml

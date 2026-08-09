@@ -1,0 +1,123 @@
+# Generated from architecture/model-tags.json; do not edit by hand.
+# Workshop evidence: B-traceability-log.md, Session Q&A #1 and #2.
+direction: right
+z_tz_current_cryptography: "tz-current-cryptography" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_current_kms: "cmp-current-kms\nkms: mixed-data-encryption" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_current_data: "tz-current-data" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_current_s3_monolith: "cmp-current-s3-monolith\ns3-monolith: mixed-object-storage" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_current_identity: "tz-current-identity" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_current_iam: "cmp-current-iam\niam: workload-and-human-identities" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_current_public_edge: "tz-current-public-edge" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_current_edge: "cmp-current-edge\nedge: content-delivery" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_current_security_operations: "tz-current-security-operations" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_current_detection: "cmp-current-detection\ndetection: security-alerting" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+  n_cmp_current_logging: "cmp-current-logging\nlogging: audit-and-access-logging" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_current_workload: "tz-current-workload" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_current_compute: "cmp-current-compute\ncompute: application-runtime" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_external_automation: "tz-external-automation" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_actor_analytics_agent: "actor-analytics-agent\nAutonomous analytics agent" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+  n_actor_cicd: "actor-cicd\nCI/CD pipeline" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+}
+z_tz_external_partner: "tz-external-partner" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_actor_partner: "actor-partner\nCross-account partner" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+}
+z_tz_public_internet: "tz-public-internet" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_actor_customer: "actor-customer\nCustomer browser" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+}
+z_tz_public_internet.n_actor_customer -> z_tz_current_data.n_cmp_current_s3_monolith: "flow-current-01\nHTTPS/S3: public assets and exposed objects\nauth: anonymous"
+z_tz_public_internet.n_actor_customer -> z_tz_current_workload.n_cmp_current_compute: "flow-current-02\nHTTPS: application requests and user-controlled URLs\nauth: application session"
+z_tz_current_workload.n_cmp_current_compute -> z_tz_current_data.n_cmp_current_s3_monolith: "flow-current-03\nHTTPS/S3: application objects\nauth: instance profile"
+z_tz_external_partner.n_actor_partner -> z_tz_current_identity.n_cmp_current_iam: "flow-current-04\nSTS: role assumption\nauth: cross-account role"
+z_tz_current_identity.n_cmp_current_iam -> z_tz_current_data.n_cmp_current_s3_monolith: "flow-current-05\nHTTPS/S3: partner uploads and cross-prefix reads\nauth: IAM role"
+z_tz_external_automation.n_actor_cicd -> z_tz_current_identity.n_cmp_current_iam: "flow-current-06\nOIDC/STS: deployment identity\nauth: broad OIDC subject"
+z_tz_external_automation.n_actor_analytics_agent -> z_tz_current_data.n_cmp_current_s3_monolith: "flow-current-07\nHTTPS/S3: analytics reads and writes\nauth: autonomous IAM role"
+z_tz_current_data.n_cmp_current_s3_monolith -> z_tz_current_cryptography.n_cmp_current_kms: "flow-current-08\nKMS: encryption operations\nauth: AWS-managed key"
+z_tz_current_data.n_cmp_current_s3_monolith -> z_tz_current_security_operations.n_cmp_current_logging: "flow-current-09\nAWS logging: management and access logs\nauth: service principal"

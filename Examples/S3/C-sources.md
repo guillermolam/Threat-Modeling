@@ -85,6 +85,13 @@
 | **IriusRisk · SD Elements · ThreatModeler · Tutamen** | Commercial platforms |
 | **Threat-Modeling.com tool** | Free, browser-based |
 
+### IriusRisk course and toolchain
+
+- [IriusRisk CLI](https://github.com/iriusrisk/iriusrisk-cli), pinned here to `0.6.3`; source code and `--help` take precedence over stale README examples.
+- [IriusRisk Security Research Assistant](https://github.com/iriusrisk/iriusrisk-security-research-assistant), pinned to commit `4fc6436bc7c5517d43d8ce23012b9c5deefc4688` (ISRA 3.2.0).
+- [Associate-course conversation](https://chatgpt.com/share/6a78701f-8d74-83eb-9b3c-f1e7ea040ea2) and local course notes; study material, not tenant evidence.
+- `Training_Runs/IriusRisk/IR_ Mobile Banking Application Template.xml`, an isolated native-XML comparison fixture governed by `.cowork/FOLDER-INSTRUCTIONS.md`.
+
 ---
 
 ## Games (for teaching)

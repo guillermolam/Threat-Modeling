@@ -124,6 +124,8 @@ resource "aws_security_group" "app" {
 #   http_put_response_hop_limit = 1   -> a proxied request cannot reach IMDS.
 # ---------------------------------------------------------------------------
 resource "aws_instance" "app" {
+  count = var.use_native_instance_resource ? 1 : 0
+
   ami                    = data.aws_ami.app.id
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.app.id
@@ -142,4 +144,26 @@ resource "aws_instance" "app" {
     Finding = "F-13"
     Actor   = "A-10 Compromised Compute Role"
   })
+}
+
+# Floci 1.6.0 accepts RunInstances but a clean runtime immediately reports the
+# instance as terminated. Preserve the reviewed compute/IMDS contract without
+# claiming runtime enforcement; verify-lab.sh records this as GAP-FLOCI-EC2.
+resource "terraform_data" "floci_instance_contract" {
+  count = var.use_native_instance_resource ? 0 : 1
+
+  input = {
+    name                    = "${var.name_prefix}-app"
+    ami                     = data.aws_ami.app.id
+    instance_type           = var.instance_type
+    instance_profile_name   = var.instance_profile_name
+    subnet_id               = aws_subnet.app.id
+    security_group_id       = aws_security_group.app.id
+    http_tokens             = var.imdsv2_required ? "required" : "optional"
+    metadata_response_hops  = var.metadata_hop_limit
+    block_link_local_egress = var.block_link_local_egress
+    emulator_gap            = "GAP-FLOCI-EC2"
+    threat_model_component  = var.tags["tm:component-id"]
+    threat_model_trust_zone = var.tags["tm:trust-zone"]
+  }
 }

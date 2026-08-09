@@ -60,6 +60,18 @@
 
 ## Open Items Carried Forward
 
+### IriusRisk extension (v9)
+
+| Decision | Recorded outcome |
+|---|---|
+| Project topology | One project with `meridian-s3-current-v1` and `meridian-s3-target-v1` snapshots |
+| Import boundary | OTM is architecture-only; IriusRisk generates threats and countermeasures |
+| Questionnaire evidence | Answer only from Terragrunt/OpenTofu; Floci `GAP` stays unknown/pending |
+| Tenant data | Credentials, UUIDs, synchronized data, reports, and native exports remain untracked |
+| Manual findings | Every ID remains authoritative in `A`; generated content is linked or marked manual-only in `iriusrisk/traceability.yaml` |
+| Native XML | Mobile Banking XML remains isolated under `Training_Runs/IriusRisk/` |
+| Content authoring | Four reviewed YSC fixtures are pinned to ISRA commit `4fc6436bc7c5517d43d8ce23012b9c5deefc4688`; Azure regeneration is optional |
+
 | Item | Type | Owner | Next action |
 |---|---|---|---|
 | Deploy role policy JSON | **Verification** | Platform Eng | Read the policy; confirm or refute S3 |

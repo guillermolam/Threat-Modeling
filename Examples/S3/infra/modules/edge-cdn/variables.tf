@@ -35,3 +35,9 @@ variable "separate_ugc_behavior" {
   type        = bool
   default     = true
 }
+
+variable "use_native_distribution_resource" {
+  description = "Use aws_cloudfront_distribution on real AWS. Keep false for Floci 1.6.0, whose CloudFront distribution APIs return empty responses that crash the AWS provider."
+  type        = bool
+  default     = false
+}

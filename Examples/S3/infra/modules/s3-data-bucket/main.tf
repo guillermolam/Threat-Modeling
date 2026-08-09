@@ -22,6 +22,11 @@ locals {
   bucket_name = "${var.name_prefix}-${var.purpose}"
   account_id  = data.aws_caller_identity.current.account_id
   bucket_arn  = "arn:aws:s3:::${local.bucket_name}"
+  # Terragrunt dependency outputs must keep a stable string type. The KMS
+  # module therefore emits "" when a tier deliberately uses SSE-S3; normalize
+  # that sentinel here so it has exactly the same meaning as null.
+  has_kms_key    = try(trimspace(var.kms_key_arn), "") != ""
+  is_public_tier = startswith(var.classification, "public")
 
   # Whether we need to attach a bucket policy at all.
   has_policy = (
@@ -131,13 +136,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = var.kms_key_arn != null ? "aws:kms" : "AES256"
-      kms_master_key_id = var.kms_key_arn
+      sse_algorithm     = local.has_kms_key ? "aws:kms" : "AES256"
+      kms_master_key_id = local.has_kms_key ? var.kms_key_arn : null
     }
     # 13 §13.4 Level D — Bucket Keys are a COST optimization, not a security
     # downgrade. They still enforce the same key policy. Noted so a reviewer
     # does not raise it as a finding.
-    bucket_key_enabled = var.kms_key_arn != null ? var.bucket_key_enabled : null
+    bucket_key_enabled = local.has_kms_key ? var.bucket_key_enabled : null
   }
 }
 
@@ -165,7 +170,7 @@ resource "aws_s3_bucket_logging" "this" {
 # down why — that is what noncurrent_version_expiration_days documents.
 # ---------------------------------------------------------------------------
 resource "aws_s3_bucket_lifecycle_configuration" "this" {
-  count = length(var.lifecycle_rules) > 0 ? 1 : 0
+  count = var.use_native_lifecycle_resource && length(var.lifecycle_rules) > 0 ? 1 : 0
 
   bucket = aws_s3_bucket.this.id
 
@@ -193,6 +198,77 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
         }
       }
     }
+  }
+
+  depends_on = [aws_s3_bucket_versioning.this]
+}
+
+# Floci accepts the S3 lifecycle API but its provider refresh does not preserve
+# aws_s3_bucket_lifecycle_configuration. Drive that same API explicitly so the
+# lab remains warning-free without weakening or pretending to verify the rule.
+locals {
+  floci_lifecycle_configuration = {
+    Rules = [
+      for rule in var.lifecycle_rules : merge(
+        {
+          ID     = rule.id
+          Status = "Enabled"
+          Filter = { Prefix = rule.prefix }
+        },
+        rule.expiration_days != null ? {
+          Expiration = { Days = rule.expiration_days }
+        } : {},
+        rule.noncurrent_version_expiration_days != null ? {
+          NoncurrentVersionExpiration = {
+            NoncurrentDays = rule.noncurrent_version_expiration_days
+          }
+        } : {}
+      )
+    ]
+  }
+}
+
+resource "terraform_data" "floci_lifecycle" {
+  count = !var.use_native_lifecycle_resource && length(var.lifecycle_rules) > 0 ? 1 : 0
+
+  input = {
+    bucket        = aws_s3_bucket.this.id
+    configuration = jsonencode(local.floci_lifecycle_configuration)
+    endpoint      = var.floci_endpoint
+    region        = var.aws_region
+  }
+
+  triggers_replace = [
+    aws_s3_bucket.this.id,
+    jsonencode(local.floci_lifecycle_configuration),
+  ]
+
+  provisioner "local-exec" {
+    interpreter = ["/usr/bin/env", "bash", "-c"]
+    command     = <<-EOT
+      set -euo pipefail
+      export AWS_ACCESS_KEY_ID=test
+      export AWS_SECRET_ACCESS_KEY=test
+      export AWS_REGION='${self.input.region}'
+      export AWS_ENDPOINT_URL='${self.input.endpoint}'
+      aws s3api put-bucket-lifecycle-configuration \
+        --bucket '${self.input.bucket}' \
+        --lifecycle-configuration '${self.input.configuration}' \
+        >/dev/null
+    EOT
+  }
+
+  provisioner "local-exec" {
+    when        = destroy
+    interpreter = ["/usr/bin/env", "bash", "-c"]
+    command     = <<-EOT
+      set -euo pipefail
+      export AWS_ACCESS_KEY_ID=test
+      export AWS_SECRET_ACCESS_KEY=test
+      export AWS_REGION='${self.input.region}'
+      export AWS_ENDPOINT_URL='${self.input.endpoint}'
+      aws s3api delete-bucket-lifecycle --bucket '${self.input.bucket}' >/dev/null
+    EOT
   }
 
   depends_on = [aws_s3_bucket_versioning.this]
@@ -322,7 +398,7 @@ data "aws_iam_policy_document" "bucket" {
   }
 
   dynamic "statement" {
-    for_each = var.enforce_sse_kms_writes && var.kms_key_arn != null ? [1] : []
+    for_each = var.enforce_sse_kms_writes && local.has_kms_key ? [1] : []
     content {
       sid       = "ENC5_DenyWritesUnderUnsanctionedKey"
       effect    = "Deny"

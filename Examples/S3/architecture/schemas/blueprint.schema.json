@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/meridian-s3/blueprint.schema.json",
+  "title": "Meridian S3 Architecture Blueprint",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "model_id",
+    "posture",
+    "actors",
+    "trust_zones",
+    "components",
+    "data_flows",
+    "floci_gaps",
+    "runtime_inventory"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "posture": {"enum": ["current-state", "target-state"]},
+    "actors": {"type": "array", "items": {"type": "object", "required": ["id", "name", "trust_zone"]}},
+    "trust_zones": {"type": "array", "items": {"type": "object", "required": ["id", "components"]}},
+    "components": {"type": "array", "items": {"type": "object", "required": ["id", "unit", "family", "trust_zone", "resources", "evidence"]}},
+    "data_flows": {"type": "array", "items": {"type": "object", "required": ["id", "source", "target", "protocol", "data", "classification", "authentication"]}},
+    "floci_gaps": {"type": "array"},
+    "runtime_inventory": {"type": "object"}
+  },
+  "additionalProperties": true
+}

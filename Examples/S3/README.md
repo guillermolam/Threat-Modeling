@@ -1,7 +1,7 @@
 # Threat Modeling Study Guide
 ## A Practical, Worked Case: The Publicly Exposed S3 Bucket
 
-**Version 8 · Multi-file edition**
+**Version 9 · Multi-file edition**
 
 A study guide that teaches threat modeling theory and applies every technique to one continuous, realistic case — a customer-data S3 bucket at a fictional retailer. Theory generalizes; the case shows you what application actually looks like.
 
@@ -59,7 +59,14 @@ A study guide that teaches threat modeling theory and applies every technique to
 |---|---|---|
 | 14 | **[14-continuous-threat-modeling.md](14-continuous-threat-modeling.md)** | CTM · baseline + Threat Model Every Story · curator role · ticket labels · subject list · **S3 Secure Developer Checklist** · STRIDE-in-DevOps rollout |
 | 15 | **[15-methodology-comparison.md](15-methodology-comparison.md)** | STRIDE · PASTA (7 stages applied) · Trike · LINDDUN · TARA · DREAD · attack trees — compared, graded, and how to choose |
-| 16 | **[16-tooling-automation.md](16-tooling-automation.md)** | Threat modeling as code · pytm/Threatspec/Threat Dragon · automation in CI/CD · what to automate and what not to |
+| 16 | **[16-tooling-automation.md](16-tooling-automation.md)** | Threat modeling as code · pytm/Threatspec/Threat Dragon · automation in CI/CD · what to automate and what not to · formal adapter contracts |
+
+### Part VI — IriusRisk Practicum
+| # | File | What's in it |
+|---|---|---|
+| 17 | **[17-iriusrisk-foundations.md](17-iriusrisk-foundations.md)** | Concepts, relationships, states, reports, and OTM versus native XML |
+| 18 | **[18-iriusrisk-s3-lab.md](18-iriusrisk-s3-lab.md)** | Offline validation plus the optional authenticated current→target lab |
+| 19 | **[19-iriusrisk-content-authoring.md](19-iriusrisk-content-authoring.md)** | Reviewed YSC authoring with pinned ISRA 3.2.0 |
 
 ### Appendices
 | File | What's in it |
@@ -91,6 +98,10 @@ Concepts, the comparative survey, then the three big elicitation techniques in d
 **Path 5 — "Just the diagrams" (≈1 hour)**
 `04` → `05`
 Every DFD level with full annotation standards, plus the model types DFDs can't cover.
+
+**Path 6 — "Use IriusRisk without losing the evidence trail" (≈2 hours)**
+`17` → `18` → `19` → `B`
+Learn the platform model, run the versioned lab, author reusable content, then audit the crosswalk.
 
 ---
 

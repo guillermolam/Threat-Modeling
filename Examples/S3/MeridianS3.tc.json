@@ -1,0 +1,292 @@
+{
+  "schema": 1,
+  "applicationInfo": {
+    "name": "Meridian Retail S3 data platform",
+    "description": "Threat model for Meridian Retail Co.'s public assets, regulated customer exports, and user-generated content on AWS S3. The workspace compares the intentionally vulnerable current state with the segmented target state implemented by the local Terragrunt/OpenTofu lab. Finding identifiers correspond to `A-findings-register.md`."
+  },
+  "architecture": {
+    "description": "### Current state\n\nInternet clients and a CloudFront distribution reach one S3 bucket containing public, UGC, and regulated data. Block Public Access and versioning are disabled; anonymous `GetObject` and `ListBucket` are allowed. Broad IAM roles and an IMDSv1-capable compute tier can access the bucket. CloudTrail records management events but not S3 object data events.\n\n### Target state\n\nCloudFront uses Origin Access Control to read a public-only origin behind WAF. Regulated exports, UGC, and quarantine are separate private buckets. Sensitive tiers use purpose-specific customer-managed KMS keys, write-time KMS enforcement, TLS policy, versioning, and scoped reader/writer roles. UGC is scanned before promotion. CloudTrail S3 data events, server access logs, EventBridge detections, and Config rules provide detective coverage."
+  },
+  "dataflow": {
+    "description": "1. Anonymous users request public content through CloudFront; only the distribution OAC may read the public S3 origin.\n2. The export worker writes regulated exports with the regulated CMK; the API reader can read but cannot write.\n3. Uploaders write only to the UGC quarantine bucket. A scanner reads quarantine and promotes approved objects to the UGC bucket using the UGC CMK.\n4. S3 object activity flows to CloudTrail and access logs; sensitive control-plane events flow through EventBridge to the security alert topic.\n5. Security and privacy operations use separate, purpose-bound roles for incident response and erasure workflows."
+  },
+  "assumptions": [
+    {
+      "id": "30000000-0000-4000-8000-000000000001",
+      "numericId": 1,
+      "displayOrder": 1,
+      "content": "Production DNS, TLS certificates, and CloudFront viewer configuration are managed outside this local emulator lab.",
+      "tags": ["boundary", "cloudfront"]
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000002",
+      "numericId": 2,
+      "displayOrder": 2,
+      "content": "Production logs are written to a separately administered log-archive account even though Floci emulates a single account.",
+      "tags": ["logging", "production-gap"]
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000003",
+      "numericId": 3,
+      "displayOrder": 3,
+      "content": "The UGC malware scanner validates content before promotion and fails closed when scanning is unavailable.",
+      "tags": ["ugc", "malware"]
+    }
+  ],
+  "mitigations": [
+    {
+      "id": "20000000-0000-4000-8000-000000000001",
+      "numericId": 1,
+      "displayOrder": 1,
+      "content": "Split public, regulated, UGC, and quarantine data into purpose-bound buckets and reject regulated data from public prefixes.",
+      "status": "mitigationResolved",
+      "tags": ["F-01", "classification"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000002",
+      "numericId": 2,
+      "displayOrder": 2,
+      "content": "Enable all four S3 Block Public Access controls and permit public-origin reads only from the named CloudFront OAC distribution.",
+      "status": "mitigationResolved",
+      "tags": ["F-01", "F-02", "F-03"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000003",
+      "numericId": 3,
+      "displayOrder": 3,
+      "content": "Use separate reader, writer, scanner, privacy, and security roles with prefix, action, and KMS-key constraints; remove long-lived user keys.",
+      "status": "mitigationResolved",
+      "tags": ["F-13", "F-18", "IAM"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000004",
+      "numericId": 4,
+      "displayOrder": 4,
+      "content": "Enable S3 versioning and use Object Lock on regulated exports with an approved retention and erasure exception process.",
+      "status": "mitigationResolved",
+      "tags": ["F-11", "ransomware"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000005",
+      "numericId": 5,
+      "displayOrder": 5,
+      "content": "Use purpose-specific CMKs for sensitive tiers; deny writes without aws:kms, writes under an unsanctioned key, and all SSE-C operations.",
+      "status": "mitigationResolved",
+      "tags": ["ENC-2", "ENC-5", "ENC-6"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000006",
+      "numericId": 6,
+      "displayOrder": 6,
+      "content": "Record S3 object data events and server access logs, validate CloudTrail files, and isolate production log administration from workload identities.",
+      "status": "mitigationInProgress",
+      "tags": ["LOG-1", "audit"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000007",
+      "numericId": 7,
+      "displayOrder": 7,
+      "content": "Continuously detect public-policy changes, KMS disablement, CloudTrail stoppage, and anomalous object API activity using Config and EventBridge alerts.",
+      "status": "mitigationInProgress",
+      "tags": ["drift", "detection"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000008",
+      "numericId": 8,
+      "displayOrder": 8,
+      "content": "Require IMDSv2, set metadata response hop limit to one, and keep the compute role least-privileged.",
+      "status": "mitigationResolved",
+      "tags": ["F-14", "IMDS"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000009",
+      "numericId": 9,
+      "displayOrder": 9,
+      "content": "Deny insecure transport and TLS versions below 1.2 in every bucket policy.",
+      "status": "mitigationResolved",
+      "tags": ["ENC-1", "TLS"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000010",
+      "numericId": 10,
+      "displayOrder": 10,
+      "content": "Apply classification-specific lifecycle rules and a documented privacy erasure workflow that accounts for versions, replicas, logs, and Object Lock.",
+      "status": "mitigationInProgress",
+      "tags": ["P-01", "P-02", "privacy"]
+    }
+  ],
+  "threats": [
+    {
+      "id": "10000000-0000-4000-8000-000000000001",
+      "numericId": 1,
+      "displayOrder": 1,
+      "metadata": [
+        {"key": "Priority", "value": "High"},
+        {"key": "STRIDE", "value": ["I"]},
+        {"key": "custom:finding", "value": ["F-01", "F-02", "F-03"]}
+      ],
+      "tags": ["S3", "PII", "internet"],
+      "threatSource": "internet-based actor",
+      "prerequisites": "who discovers the monolithic bucket name",
+      "threatAction": "enumerate keys and download customer exports without credentials",
+      "threatImpact": "bulk disclosure of regulated customer records",
+      "impactedGoal": ["confidentiality", "privacy"],
+      "impactedAssets": ["customer export objects", "customer identities"],
+      "statement": "An internet-based actor who discovers the monolithic bucket name can enumerate keys and download customer exports without credentials, which leads to bulk disclosure of regulated customer records, resulting in reduced confidentiality and privacy of customer export objects and customer identities.",
+      "status": "threatResolved"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000002",
+      "numericId": 2,
+      "displayOrder": 2,
+      "metadata": [
+        {"key": "Priority", "value": "High"},
+        {"key": "STRIDE", "value": ["S", "E", "I"]},
+        {"key": "custom:finding", "value": ["F-13", "F-18"]}
+      ],
+      "tags": ["IAM", "credentials"],
+      "threatSource": "external or internal actor",
+      "prerequisites": "with a leaked long-lived access key or compromised broad role",
+      "threatAction": "use wildcard S3 and KMS permissions outside the intended workload purpose",
+      "threatImpact": "unauthorized cross-tier reading, writing, or key use",
+      "impactedGoal": ["confidentiality", "integrity"],
+      "impactedAssets": ["S3 objects", "KMS keys", "audit evidence"],
+      "statement": "An external or internal actor with a leaked long-lived access key or compromised broad role can use wildcard S3 and KMS permissions outside the intended workload purpose, which leads to unauthorized cross-tier reading, writing, or key use, resulting in reduced confidentiality and integrity of S3 objects, KMS keys, and audit evidence.",
+      "status": "threatResolved"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000003",
+      "numericId": 3,
+      "displayOrder": 3,
+      "metadata": [
+        {"key": "Priority", "value": "High"},
+        {"key": "STRIDE", "value": ["T", "D"]},
+        {"key": "custom:finding", "value": ["F-11", "ENC-5", "ENC-6"]}
+      ],
+      "tags": ["ransomware", "S3"],
+      "threatSource": "actor",
+      "prerequisites": "with write access to an unversioned bucket",
+      "threatAction": "overwrite or re-encrypt objects with an attacker-controlled SSE-C key",
+      "threatImpact": "permanent loss of readable business and customer data",
+      "impactedGoal": ["integrity", "availability"],
+      "impactedAssets": ["regulated exports", "user content"],
+      "statement": "An actor with write access to an unversioned bucket can overwrite or re-encrypt objects with an attacker-controlled SSE-C key, which leads to permanent loss of readable business and customer data, resulting in reduced integrity and availability of regulated exports and user content.",
+      "status": "threatResolved"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000004",
+      "numericId": 4,
+      "displayOrder": 4,
+      "metadata": [
+        {"key": "Priority", "value": "High"},
+        {"key": "STRIDE", "value": ["S", "E"]},
+        {"key": "custom:finding", "value": "F-13"}
+      ],
+      "tags": ["EC2", "IMDS", "SSRF"],
+      "threatSource": "internet-based actor",
+      "prerequisites": "who reaches a server-side request forgery path on the compute tier",
+      "threatAction": "query IMDSv1 and steal temporary role credentials",
+      "threatImpact": "workload identity compromise and unauthorized S3 access",
+      "impactedGoal": ["confidentiality", "integrity"],
+      "impactedAssets": ["instance role credentials", "S3 data"],
+      "statement": "An internet-based actor who reaches a server-side request forgery path on the compute tier can query IMDSv1 and steal temporary role credentials, which leads to workload identity compromise and unauthorized S3 access, resulting in reduced confidentiality and integrity of instance role credentials and S3 data.",
+      "status": "threatResolved"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000005",
+      "numericId": 5,
+      "displayOrder": 5,
+      "metadata": [
+        {"key": "Priority", "value": "High"},
+        {"key": "STRIDE", "value": ["R", "I"]},
+        {"key": "custom:finding", "value": "LOG-1"}
+      ],
+      "tags": ["CloudTrail", "forensics"],
+      "threatSource": "actor",
+      "prerequisites": "who reads objects while only management events are logged",
+      "threatAction": "exfiltrate data without generating attributable object-level audit records",
+      "threatImpact": "delayed detection and inconclusive incident reconstruction",
+      "impactedGoal": ["accountability", "confidentiality"],
+      "impactedAssets": ["customer data", "audit trail"],
+      "statement": "An actor who reads objects while only management events are logged can exfiltrate data without generating attributable object-level audit records, which leads to delayed detection and inconclusive incident reconstruction, resulting in reduced accountability and confidentiality of customer data and the audit trail.",
+      "status": "threatIdentified"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000006",
+      "numericId": 6,
+      "displayOrder": 6,
+      "metadata": [
+        {"key": "Priority", "value": "Medium"},
+        {"key": "STRIDE", "value": ["E", "I"]},
+        {"key": "custom:finding", "value": "F-14"}
+      ],
+      "tags": ["CloudFront", "OAC"],
+      "threatSource": "cloud tenant actor",
+      "prerequisites": "when an origin policy trusts the CloudFront service without binding a source distribution",
+      "threatAction": "use a different distribution as a confused deputy to read origin objects",
+      "threatImpact": "bypass of the intended content-delivery boundary",
+      "impactedGoal": ["confidentiality"],
+      "impactedAssets": ["public-origin objects", "origin access policy"],
+      "statement": "A cloud tenant actor when an origin policy trusts the CloudFront service without binding a source distribution can use a different distribution as a confused deputy to read origin objects, which leads to bypass of the intended content-delivery boundary, resulting in reduced confidentiality of public-origin objects and the origin access policy.",
+      "status": "threatResolved"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000007",
+      "numericId": 7,
+      "displayOrder": 7,
+      "metadata": [
+        {"key": "Priority", "value": "High"},
+        {"key": "STRIDE", "value": ["T", "I", "D"]},
+        {"key": "custom:finding", "value": ["F-12"]}
+      ],
+      "tags": ["UGC", "malware"],
+      "threatSource": "untrusted uploader",
+      "prerequisites": "with direct write access to a served UGC prefix",
+      "threatAction": "upload active or malicious content and make it available before scanning",
+      "threatImpact": "malware delivery, stored content abuse, or service disruption",
+      "impactedGoal": ["integrity", "availability", "safety"],
+      "impactedAssets": ["end users", "UGC objects", "brand reputation"],
+      "statement": "An untrusted uploader with direct write access to a served UGC prefix can upload active or malicious content and make it available before scanning, which leads to malware delivery, stored content abuse, or service disruption, resulting in reduced integrity, availability, and safety of end users, UGC objects, and brand reputation.",
+      "status": "threatResolved"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000008",
+      "numericId": 8,
+      "displayOrder": 8,
+      "metadata": [
+        {"key": "Priority", "value": "Medium"},
+        {"key": "STRIDE", "value": ["I", "R"]},
+        {"key": "custom:finding", "value": ["P-01", "P-02"]}
+      ],
+      "tags": ["privacy", "retention"],
+      "threatSource": "operator or automated lifecycle process",
+      "prerequisites": "when classifications share retention rules and object versions are overlooked",
+      "threatAction": "retain personal data beyond purpose or incompletely erase a data subject",
+      "threatImpact": "privacy noncompliance and continued exposure of supposedly deleted data",
+      "impactedGoal": ["privacy", "accountability"],
+      "impactedAssets": ["personal data", "data-subject rights", "compliance evidence"],
+      "statement": "An operator or automated lifecycle process when classifications share retention rules and object versions are overlooked can retain personal data beyond purpose or incompletely erase a data subject, which leads to privacy noncompliance and continued exposure of supposedly deleted data, resulting in reduced privacy and accountability of personal data, data-subject rights, and compliance evidence.",
+      "status": "threatIdentified"
+    }
+  ],
+  "mitigationLinks": [
+    {"mitigationId": "20000000-0000-4000-8000-000000000001", "linkedId": "10000000-0000-4000-8000-000000000001"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000002", "linkedId": "10000000-0000-4000-8000-000000000001"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000003", "linkedId": "10000000-0000-4000-8000-000000000002"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000004", "linkedId": "10000000-0000-4000-8000-000000000003"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000005", "linkedId": "10000000-0000-4000-8000-000000000003"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000006", "linkedId": "10000000-0000-4000-8000-000000000005"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000007", "linkedId": "10000000-0000-4000-8000-000000000005"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000008", "linkedId": "10000000-0000-4000-8000-000000000004"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000002", "linkedId": "10000000-0000-4000-8000-000000000006"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000001", "linkedId": "10000000-0000-4000-8000-000000000007"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000003", "linkedId": "10000000-0000-4000-8000-000000000007"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000009", "linkedId": "10000000-0000-4000-8000-000000000001"},
+    {"mitigationId": "20000000-0000-4000-8000-000000000010", "linkedId": "10000000-0000-4000-8000-000000000008"}
+  ],
+  "assumptionLinks": [
+    {"type": "Threat", "assumptionId": "30000000-0000-4000-8000-000000000001", "linkedId": "10000000-0000-4000-8000-000000000006"},
+    {"type": "Mitigation", "assumptionId": "30000000-0000-4000-8000-000000000002", "linkedId": "20000000-0000-4000-8000-000000000006"},
+    {"type": "Threat", "assumptionId": "30000000-0000-4000-8000-000000000003", "linkedId": "10000000-0000-4000-8000-000000000007"}
+  ]
+}

@@ -1,0 +1,80 @@
+Definitions:
+  AWS::Diagram::Canvas:
+    Type: Group
+    Border:
+      Color: "rgba(0, 0, 0, 0)"
+    Fill:
+      Color: "rgba(255, 255, 255, 255)"
+    CFn:
+      HasChildren: true
+  AWS::Diagram::Cloud:
+    Type: Group
+    Border:
+      Color: "rgba(35, 47, 62, 255)"
+      Type: dashed
+    Fill:
+      Color: "rgba(245, 247, 250, 255)"
+    Label:
+      Title: Floci AWS-compatible boundary
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: true
+  AWSCloudNoLogo:
+    Type: Preset
+    Border:
+      Color: "rgba(35, 47, 62, 255)"
+      Type: dashed
+    Fill:
+      Color: "rgba(245, 247, 250, 255)"
+    Label:
+      Title: Floci AWS-compatible boundary
+      Color: "rgba(35, 47, 62, 255)"
+  AWS::EC2::Instance:
+    Type: Resource
+    Label:
+      Title: Amazon EC2
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false
+  AWS::Events::Rule:
+    Type: Resource
+    Label:
+      Title: EventBridge rule
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false
+  AWS::CloudFront::Distribution:
+    Type: Resource
+    Label:
+      Title: CloudFront
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false
+  AWS::IAM::Role:
+    Type: Resource
+    Label:
+      Title: IAM
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false
+  AWS::KMS::Key:
+    Type: Resource
+    Label:
+      Title: AWS KMS
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false
+  AWS::CloudTrail::Trail:
+    Type: Resource
+    Label:
+      Title: CloudTrail
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false
+  AWS::S3::Bucket:
+    Type: Resource
+    Label:
+      Title: Amazon S3
+      Color: "rgba(35, 47, 62, 255)"
+    CFn:
+      HasChildren: false

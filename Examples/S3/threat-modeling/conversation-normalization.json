@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.0.0",
+  "formal_system": "formal-system.json",
+  "source": "../../03-session-facilitation.md",
+  "section_start": "## 3.4",
+  "section_end": "## 3.5",
+  "participants": ["Priya", "Diego", "Amara", "Sam", "Jordan"],
+  "evidence_fragments": {
+    "actor-customer": "Customers",
+    "cmp-s3-bucket": "this bucket",
+    "cmp-app-backend": "app backend",
+    "cmp-cicd-pipeline": "Sam's pipeline",
+    "cmp-cloudfront": "CloudFront",
+    "cmp-deploy-role": "deploy role",
+    "cmp-analytics-job": "analytics job",
+    "rel-current-01": "Anonymous users for the public marketing assets",
+    "rel-current-02": "the app backend for customer records",
+    "rel-current-03": "Sam's pipeline for policy deploys",
+    "rel-current-04": "Customers upload avatars",
+    "rel-current-05": "gets served back through CloudFront",
+    "rel-current-06": "served back through CloudFront",
+    "rel-current-07": "OIDC-federated from GitHub Actions",
+    "rel-current-08": "Can it modify *any* bucket policy in the account?",
+    "rel-current-09": "The analytics job that reads the exports",
+    "rel-current-10": "downloads each file in a loop.",
+    "attr-current-01": "same bucket, different prefix.",
+    "unc-current-01": null,
+    "unc-current-02": "I don't think retention was ever defined for that prefix.",
+    "unc-current-03": "I'd have to look at the JSON.",
+    "unc-current-04": "validates the manifest, then downloads each file in a loop."
+  },
+  "aliases": [
+    {
+      "id": "actor-customer",
+      "name": "Customer",
+      "kind": "actor",
+      "phrases": ["anonymous users", "customers"]
+    },
+    {
+      "id": "cmp-s3-bucket",
+      "name": "Shared object bucket",
+      "kind": "datastore",
+      "phrases": ["this bucket", "same bucket", "the object", "objects", "bucket's arn"]
+    },
+    {
+      "id": "cmp-app-backend",
+      "name": "Application backend",
+      "kind": "process",
+      "phrases": ["app backend", "the backend"]
+    },
+    {
+      "id": "cmp-cicd-pipeline",
+      "name": "CI/CD pipeline",
+      "kind": "process",
+      "phrases": ["sam's pipeline", "github actions"]
+    },
+    {
+      "id": "cmp-cloudfront",
+      "name": "CloudFront distribution",
+      "kind": "process",
+      "phrases": ["cloudfront"]
+    },
+    {
+      "id": "cmp-deploy-role",
+      "name": "Deployment role",
+      "kind": "security-service",
+      "phrases": ["deploy role"]
+    },
+    {
+      "id": "cmp-analytics-job",
+      "name": "Analytics export reader",
+      "kind": "process",
+      "phrases": ["analytics job", "analytics reader"]
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-current-01",
+      "contains_all": ["anonymous users", "public marketing assets"],
+      "subject": "actor-customer",
+      "predicate": "reads",
+      "object": "cmp-s3-bucket",
+      "data": "public marketing assets",
+      "protocol": "unknown",
+      "authentication": "anonymous",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-02",
+      "contains_all": ["app backend", "customer records"],
+      "subject": "cmp-app-backend",
+      "predicate": "accesses",
+      "object": "cmp-s3-bucket",
+      "data": "customer records",
+      "protocol": "unknown",
+      "authentication": "unknown",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-03",
+      "contains_all": ["pipeline", "policy deploys"],
+      "subject": "cmp-cicd-pipeline",
+      "predicate": "deploys-policy-to",
+      "object": "cmp-s3-bucket",
+      "data": "bucket policy",
+      "protocol": "unknown",
+      "authentication": "deployment role",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-04",
+      "contains_all": ["customers upload avatars", "same bucket"],
+      "subject": "actor-customer",
+      "predicate": "uploads",
+      "object": "cmp-s3-bucket",
+      "data": "avatar image",
+      "protocol": "HTTPS/S3 PUT",
+      "authentication": "presigned URL",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-05",
+      "contains_all": ["object sits there", "cloudfront"],
+      "subject": "cmp-s3-bucket",
+      "predicate": "serves-through",
+      "object": "cmp-cloudfront",
+      "data": "avatar image",
+      "protocol": "unknown",
+      "authentication": "unknown",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-06",
+      "contains_all": ["served back through cloudfront"],
+      "subject": "cmp-cloudfront",
+      "predicate": "serves",
+      "object": "actor-customer",
+      "data": "avatar image",
+      "protocol": "HTTPS",
+      "authentication": "unknown",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-07",
+      "contains_all": ["oidc-federated", "github actions"],
+      "subject": "cmp-cicd-pipeline",
+      "predicate": "assumes",
+      "object": "cmp-deploy-role",
+      "data": "deployment identity",
+      "protocol": "OIDC/STS",
+      "authentication": "OIDC federation",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-08",
+      "contains_all": ["deploy role", "bucket policy"],
+      "subject": "cmp-deploy-role",
+      "predicate": "may-modify-policy-on",
+      "object": "cmp-s3-bucket",
+      "data": "bucket policy",
+      "protocol": "AWS API",
+      "authentication": "IAM role",
+      "certainty": "unverified"
+    },
+    {
+      "id": "rel-current-09",
+      "contains_all": ["analytics job", "reads the exports"],
+      "subject": "cmp-analytics-job",
+      "predicate": "requests-exports-from",
+      "object": "cmp-s3-bucket",
+      "data": "object list and downloads",
+      "protocol": "HTTPS/S3",
+      "authentication": "unknown",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "rel-current-10",
+      "contains_all": ["downloads each file"],
+      "subject": "cmp-s3-bucket",
+      "predicate": "returns",
+      "object": "cmp-analytics-job",
+      "data": "export files",
+      "protocol": "HTTPS/S3",
+      "authentication": "unknown",
+      "certainty": "confirmed"
+    }
+  ],
+  "attributes": [
+    {
+      "id": "attr-current-01",
+      "contains_all": ["same bucket", "different prefix"],
+      "subject": "cmp-s3-bucket",
+      "name": "logical-partition",
+      "value": "profile-picture-prefix",
+      "separate_component": false
+    }
+  ],
+  "uncertainties": [
+    {
+      "id": "unc-current-01",
+      "contains_all": ["does anything scan", "no. presigned put"],
+      "subject": "cmp-s3-bucket",
+      "property": "upload scanning",
+      "state": "confirmed-absent"
+    },
+    {
+      "id": "unc-current-02",
+      "contains_all": ["retention", "have to check"],
+      "subject": "cmp-s3-bucket",
+      "property": "avatar retention",
+      "state": "unknown"
+    },
+    {
+      "id": "unc-current-03",
+      "contains_all": ["scoped, or wildcarded", "have to look"],
+      "subject": "cmp-deploy-role",
+      "property": "resource scope",
+      "state": "unverified"
+    },
+    {
+      "id": "unc-current-04",
+      "contains_all": ["validates the manifest", "downloads each file"],
+      "subject": "cmp-analytics-job",
+      "property": "version-pinned read",
+      "state": "confirmed-absent"
+    }
+  ]
+}

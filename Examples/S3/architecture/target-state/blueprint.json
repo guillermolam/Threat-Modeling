@@ -1,0 +1,2130 @@
+{
+  "actors": [
+    {
+      "id": "actor-analytics-agent",
+      "name": "Autonomous analytics agent",
+      "trust_zone": "tz-external-automation"
+    },
+    {
+      "id": "actor-cicd",
+      "name": "CI/CD pipeline",
+      "trust_zone": "tz-external-automation"
+    },
+    {
+      "id": "actor-customer",
+      "name": "Customer browser",
+      "trust_zone": "tz-public-internet"
+    },
+    {
+      "id": "actor-partner",
+      "name": "Cross-account partner",
+      "trust_zone": "tz-external-partner"
+    }
+  ],
+  "components": [
+    {
+      "data_classification": "mixed",
+      "depends_on_units": [
+        "iam"
+      ],
+      "evidence": {
+        "plan": "plans/compute/tfplan.json"
+      },
+      "family": "compute",
+      "findings": [
+        "F-13",
+        "F-20"
+      ],
+      "flow_ids": [
+        "flow-target-02",
+        "flow-target-03",
+        "flow-target-04"
+      ],
+      "id": "cmp-target-compute",
+      "owner": "application-platform",
+      "purpose": "application-runtime",
+      "resources": [
+        {
+          "address": "aws_network_acl.app[0]",
+          "identity": "app",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "F-13",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-app-nacl",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-compute",
+            "tm:data-classification": "mixed",
+            "tm:environment": "target-state",
+            "tm:family": "compute",
+            "tm:findings": "F-13,F-20",
+            "tm:flows": "flow-target-02,flow-target-03,flow-target-04",
+            "tm:owner": "application-platform",
+            "tm:purpose": "application-runtime",
+            "tm:source-unit": "live/target-state/compute",
+            "tm:trust-zone": "tz-target-workload"
+          },
+          "type": "aws_network_acl"
+        },
+        {
+          "address": "aws_security_group.app",
+          "identity": "meridian-ts-app",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-app",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-compute",
+            "tm:data-classification": "mixed",
+            "tm:environment": "target-state",
+            "tm:family": "compute",
+            "tm:findings": "F-13,F-20",
+            "tm:flows": "flow-target-02,flow-target-03,flow-target-04",
+            "tm:owner": "application-platform",
+            "tm:purpose": "application-runtime",
+            "tm:source-unit": "live/target-state/compute",
+            "tm:trust-zone": "tz-target-workload"
+          },
+          "type": "aws_security_group"
+        },
+        {
+          "address": "aws_subnet.app",
+          "identity": "app",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-app-subnet",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-compute",
+            "tm:data-classification": "mixed",
+            "tm:environment": "target-state",
+            "tm:family": "compute",
+            "tm:findings": "F-13,F-20",
+            "tm:flows": "flow-target-02,flow-target-03,flow-target-04",
+            "tm:owner": "application-platform",
+            "tm:purpose": "application-runtime",
+            "tm:source-unit": "live/target-state/compute",
+            "tm:trust-zone": "tz-target-workload"
+          },
+          "type": "aws_subnet"
+        },
+        {
+          "address": "aws_vpc.this",
+          "identity": "this",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-vpc",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-compute",
+            "tm:data-classification": "mixed",
+            "tm:environment": "target-state",
+            "tm:family": "compute",
+            "tm:findings": "F-13,F-20",
+            "tm:flows": "flow-target-02,flow-target-03,flow-target-04",
+            "tm:owner": "application-platform",
+            "tm:purpose": "application-runtime",
+            "tm:source-unit": "live/target-state/compute",
+            "tm:trust-zone": "tz-target-workload"
+          },
+          "type": "aws_vpc"
+        },
+        {
+          "address": "terraform_data.floci_instance_contract[0]",
+          "identity": "floci_instance_contract",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {},
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/compute",
+      "trust_zone": "tz-target-workload",
+      "unit": "compute"
+    },
+    {
+      "data_classification": "security-telemetry",
+      "depends_on_units": [],
+      "evidence": {
+        "plan": "plans/detection/tfplan.json"
+      },
+      "family": "detection",
+      "findings": [
+        "F-01",
+        "F-02",
+        "F-09",
+        "F-14",
+        "ENC-6",
+        "ENC-7",
+        "ENC-8",
+        "LOG-1"
+      ],
+      "flow_ids": [
+        "flow-target-12"
+      ],
+      "id": "cmp-target-detection",
+      "owner": "security-operations",
+      "purpose": "security-alerting",
+      "resources": [
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"bucket_acl_changed\"]",
+          "identity": "meridian-ts-bucket-acl-changed",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "04 \u00a74.11",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"bucket_policy_changed\"]",
+          "identity": "meridian-ts-bucket-policy-changed",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "F-01/F-09",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"kms_alias_repointed\"]",
+          "identity": "meridian-ts-kms-alias-repointed",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "S6 / 13 \u00a713.7",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"kms_grant_created\"]",
+          "identity": "meridian-ts-kms-grant-created",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "ENC-8",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"kms_key_lifecycle\"]",
+          "identity": "meridian-ts-kms-key-lifecycle",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "ENC-7",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"public_access_block_changed\"]",
+          "identity": "meridian-ts-public-access-block-changed",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "F-02",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_rule.detection[\"role_assumed_by_partner\"]",
+          "identity": "meridian-ts-role-assumed-by-partner",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "F-14",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_cloudwatch_event_rule"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"bucket_acl_changed\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"bucket_policy_changed\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"kms_alias_repointed\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"kms_grant_created\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"kms_key_lifecycle\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"public_access_block_changed\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_cloudwatch_event_target.detection[\"role_assumed_by_partner\"]",
+          "identity": "detection",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudwatch_event_target"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"CLOUD_TRAIL_ENABLED\"]",
+          "identity": "meridian-ts-CLOUD_TRAIL_ENABLED",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"IAM_USER_NO_POLICIES_CHECK\"]",
+          "identity": "meridian-ts-IAM_USER_NO_POLICIES_CHECK",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"S3_BUCKET_LOGGING_ENABLED\"]",
+          "identity": "meridian-ts-S3_BUCKET_LOGGING_ENABLED",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"S3_BUCKET_PUBLIC_READ_PROHIBITED\"]",
+          "identity": "meridian-ts-S3_BUCKET_PUBLIC_READ_PROHIBITED",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"S3_BUCKET_PUBLIC_WRITE_PROHIBITED\"]",
+          "identity": "meridian-ts-S3_BUCKET_PUBLIC_WRITE_PROHIBITED",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED\"]",
+          "identity": "meridian-ts-S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"S3_BUCKET_SSL_REQUESTS_ONLY\"]",
+          "identity": "meridian-ts-S3_BUCKET_SSL_REQUESTS_ONLY",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_config_config_rule.managed[\"S3_BUCKET_VERSIONING_ENABLED\"]",
+          "identity": "meridian-ts-S3_BUCKET_VERSIONING_ENABLED",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_config_config_rule"
+        },
+        {
+          "address": "aws_sns_topic.security_alerts",
+          "identity": "meridian-ts-security-alerts",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "security-alerting",
+            "tm:component-id": "cmp-target-detection",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "detection",
+            "tm:findings": "F-01,F-02,F-09,F-14,ENC-6,ENC-7,ENC-8,LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "security-alerting",
+            "tm:source-unit": "live/target-state/detection",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_sns_topic"
+        }
+      ],
+      "source_unit": "live/target-state/detection",
+      "trust_zone": "tz-target-security-operations",
+      "unit": "detection"
+    },
+    {
+      "data_classification": "public-and-user-content",
+      "depends_on_units": [],
+      "evidence": {
+        "plan": "plans/edge/tfplan.json"
+      },
+      "family": "edge",
+      "findings": [
+        "F-01",
+        "F-03",
+        "F-12"
+      ],
+      "flow_ids": [
+        "flow-target-01",
+        "flow-target-02",
+        "flow-target-08"
+      ],
+      "id": "cmp-target-edge",
+      "owner": "application-platform",
+      "purpose": "oac-and-waf-content-delivery",
+      "resources": [
+        {
+          "address": "aws_cloudfront_origin_access_control.this[0]",
+          "identity": "meridian-ts-oac",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_cloudfront_origin_access_control"
+        },
+        {
+          "address": "aws_wafv2_web_acl.this[0]",
+          "identity": "meridian-ts-edge",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-edge",
+            "tm:data-classification": "public-and-user-content",
+            "tm:environment": "target-state",
+            "tm:family": "edge",
+            "tm:findings": "F-01,F-03,F-12",
+            "tm:flows": "flow-target-01,flow-target-02,flow-target-08",
+            "tm:owner": "application-platform",
+            "tm:purpose": "oac-and-waf-content-delivery",
+            "tm:source-unit": "live/target-state/edge",
+            "tm:trust-zone": "tz-target-public-edge"
+          },
+          "type": "aws_wafv2_web_acl"
+        },
+        {
+          "address": "terraform_data.floci_distribution[0]",
+          "identity": "floci_distribution",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-edge",
+            "tm:data-classification": "public-and-user-content",
+            "tm:environment": "target-state",
+            "tm:family": "edge",
+            "tm:findings": "F-01,F-03,F-12",
+            "tm:flows": "flow-target-01,flow-target-02,flow-target-08",
+            "tm:owner": "application-platform",
+            "tm:purpose": "oac-and-waf-content-delivery",
+            "tm:source-unit": "live/target-state/edge",
+            "tm:trust-zone": "tz-target-public-edge"
+          },
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/edge",
+      "trust_zone": "tz-target-public-edge",
+      "unit": "edge"
+    },
+    {
+      "data_classification": "authorization-metadata",
+      "depends_on_units": [],
+      "evidence": {
+        "plan": "plans/iam/tfplan.json"
+      },
+      "family": "iam",
+      "findings": [
+        "F-09",
+        "F-13",
+        "F-14",
+        "F-15",
+        "F-18",
+        "F-19"
+      ],
+      "flow_ids": [
+        "flow-target-05",
+        "flow-target-06",
+        "flow-target-07",
+        "flow-target-10"
+      ],
+      "id": "cmp-target-iam",
+      "owner": "identity-platform",
+      "purpose": "scoped-workload-and-human-identities",
+      "resources": [
+        {
+          "address": "aws_iam_instance_profile.app_compute",
+          "identity": "meridian-ts-app-compute",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_instance_profile"
+        },
+        {
+          "address": "aws_iam_role.analytics_agent[0]",
+          "identity": "meridian-ts-analytics-agent",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Actor": "A-6 Autonomous Analytics Agent",
+            "Environment": "target-state",
+            "Finding": "F-18",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.analytics_reader",
+          "identity": "meridian-ts-analytics-reader",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "F-07",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.app_compute",
+          "identity": "meridian-ts-app-compute",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Actor": "A-10 Compromised Compute Role",
+            "Environment": "target-state",
+            "Finding": "F-13",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.cicd_deploy",
+          "identity": "meridian-ts-cicd-deploy",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "AccessModel": "WorkloadOIDC",
+            "Environment": "target-state",
+            "Finding": "F-09",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.human[\"admin\"]",
+          "identity": "meridian-ts-admin",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "AccessModel": "PIM",
+            "AccessReview": "90d",
+            "EntraGroup": "SEC-S3-Admin-PIM",
+            "Environment": "target-state",
+            "Function": "admin",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.human[\"incidentresponder\"]",
+          "identity": "meridian-ts-incidentresponder",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "AccessModel": "PIM",
+            "AccessReview": "90d",
+            "EntraGroup": "SEC-S3-IncidentResponse",
+            "Environment": "target-state",
+            "Function": "incidentresponder",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.human[\"privacyops\"]",
+          "identity": "meridian-ts-privacyops",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "AccessModel": "PIM",
+            "AccessReview": "90d",
+            "EntraGroup": "SEC-S3-PrivacyOps",
+            "Environment": "target-state",
+            "Function": "privacyops",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.human[\"readonly\"]",
+          "identity": "meridian-ts-readonly",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "AccessModel": "Standing",
+            "AccessReview": "90d",
+            "EntraGroup": "SEC-S3-ReadOnly-Engineers",
+            "Environment": "target-state",
+            "Function": "readonly",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.human[\"securityaudit\"]",
+          "identity": "meridian-ts-securityaudit",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "AccessModel": "Standing",
+            "AccessReview": "90d",
+            "EntraGroup": "SEC-S3-SecurityAudit",
+            "Environment": "target-state",
+            "Function": "securityaudit",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role.partner_write[0]",
+          "identity": "meridian-ts-partner-write",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Actor": "A-5 Partner / Vendor",
+            "Environment": "target-state",
+            "Finding": "F-14",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-iam",
+            "tm:data-classification": "authorization-metadata",
+            "tm:environment": "target-state",
+            "tm:family": "iam",
+            "tm:findings": "F-09,F-13,F-14,F-15,F-18,F-19",
+            "tm:flows": "flow-target-05,flow-target-06,flow-target-07,flow-target-10",
+            "tm:owner": "identity-platform",
+            "tm:purpose": "scoped-workload-and-human-identities",
+            "tm:source-unit": "live/target-state/iam",
+            "tm:trust-zone": "tz-target-identity"
+          },
+          "type": "aws_iam_role"
+        },
+        {
+          "address": "aws_iam_role_policy.analytics_agent[0]",
+          "identity": "agent",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.analytics_reader",
+          "identity": "reader",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.app_compute",
+          "identity": "app",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.cicd_deploy",
+          "identity": "deploy",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.human[\"admin\"]",
+          "identity": "access",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.human[\"incidentresponder\"]",
+          "identity": "access",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.human[\"privacyops\"]",
+          "identity": "access",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.human[\"readonly\"]",
+          "identity": "access",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.human[\"securityaudit\"]",
+          "identity": "access",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        },
+        {
+          "address": "aws_iam_role_policy.partner_write[0]",
+          "identity": "partner",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_iam_role_policy"
+        }
+      ],
+      "source_unit": "live/target-state/iam",
+      "trust_zone": "tz-target-identity",
+      "unit": "iam"
+    },
+    {
+      "data_classification": "public-no-pii",
+      "depends_on_units": [],
+      "evidence": {
+        "plan": "plans/kms-public/tfplan.json"
+      },
+      "family": "kms",
+      "findings": [
+        "ENC-2"
+      ],
+      "flow_ids": [
+        "flow-target-11"
+      ],
+      "id": "cmp-target-kms-public",
+      "owner": "security-platform",
+      "purpose": "public-assets-encryption",
+      "resources": [
+        {
+          "address": "terraform_data.managed_key_decision[0]",
+          "identity": "managed_key_decision",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "tm:component-id": "cmp-target-kms-public",
+            "tm:data-classification": "public-no-pii",
+            "tm:environment": "target-state",
+            "tm:family": "kms",
+            "tm:findings": "ENC-2",
+            "tm:flows": "flow-target-11",
+            "tm:owner": "security-platform",
+            "tm:purpose": "public-assets-encryption",
+            "tm:source-unit": "live/target-state/kms-public",
+            "tm:trust-zone": "tz-target-cryptography"
+          },
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/kms-public",
+      "trust_zone": "tz-target-cryptography",
+      "unit": "kms-public"
+    },
+    {
+      "data_classification": "regulated-pii",
+      "depends_on_units": [
+        "iam"
+      ],
+      "evidence": {
+        "plan": "plans/kms-regulated/tfplan.json"
+      },
+      "family": "kms",
+      "findings": [
+        "ENC-2",
+        "ENC-3",
+        "ENC-4",
+        "ENC-5",
+        "ENC-7",
+        "ENC-8"
+      ],
+      "flow_ids": [
+        "flow-target-10"
+      ],
+      "id": "cmp-target-kms-regulated",
+      "owner": "security-platform",
+      "purpose": "regulated-data-encryption",
+      "resources": [
+        {
+          "address": "aws_kms_alias.this[0]",
+          "identity": "alias/meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_kms_alias"
+        },
+        {
+          "address": "aws_kms_key.this[0]",
+          "identity": "this",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-customer-exports",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "SensitivityTier": "customer-exports",
+            "tm:component-id": "cmp-target-kms-regulated",
+            "tm:data-classification": "regulated-pii",
+            "tm:environment": "target-state",
+            "tm:family": "kms",
+            "tm:findings": "ENC-2,ENC-3,ENC-4,ENC-5,ENC-7,ENC-8",
+            "tm:flows": "flow-target-10",
+            "tm:owner": "security-platform",
+            "tm:purpose": "regulated-data-encryption",
+            "tm:source-unit": "live/target-state/kms-regulated",
+            "tm:trust-zone": "tz-target-cryptography"
+          },
+          "type": "aws_kms_key"
+        }
+      ],
+      "source_unit": "live/target-state/kms-regulated",
+      "trust_zone": "tz-target-cryptography",
+      "unit": "kms-regulated"
+    },
+    {
+      "data_classification": "untrusted-user-content",
+      "depends_on_units": [
+        "iam"
+      ],
+      "evidence": {
+        "plan": "plans/kms-ugc/tfplan.json"
+      },
+      "family": "kms",
+      "findings": [
+        "ENC-2",
+        "ENC-3",
+        "ENC-4",
+        "ENC-5",
+        "ENC-7",
+        "ENC-8"
+      ],
+      "flow_ids": [
+        "flow-target-09"
+      ],
+      "id": "cmp-target-kms-ugc",
+      "owner": "security-platform",
+      "purpose": "user-content-encryption",
+      "resources": [
+        {
+          "address": "aws_kms_alias.this[0]",
+          "identity": "alias/meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_kms_alias"
+        },
+        {
+          "address": "aws_kms_key.this[0]",
+          "identity": "this",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-user-content",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "SensitivityTier": "user-content",
+            "tm:component-id": "cmp-target-kms-ugc",
+            "tm:data-classification": "untrusted-user-content",
+            "tm:environment": "target-state",
+            "tm:family": "kms",
+            "tm:findings": "ENC-2,ENC-3,ENC-4,ENC-5,ENC-7,ENC-8",
+            "tm:flows": "flow-target-09",
+            "tm:owner": "security-platform",
+            "tm:purpose": "user-content-encryption",
+            "tm:source-unit": "live/target-state/kms-ugc",
+            "tm:trust-zone": "tz-target-cryptography"
+          },
+          "type": "aws_kms_key"
+        }
+      ],
+      "source_unit": "live/target-state/kms-ugc",
+      "trust_zone": "tz-target-cryptography",
+      "unit": "kms-ugc"
+    },
+    {
+      "data_classification": "security-telemetry",
+      "depends_on_units": [],
+      "evidence": {
+        "plan": "plans/logging/tfplan.json"
+      },
+      "family": "logging",
+      "findings": [
+        "LOG-1"
+      ],
+      "flow_ids": [
+        "flow-target-12"
+      ],
+      "id": "cmp-target-logging",
+      "owner": "security-operations",
+      "purpose": "audit-and-data-event-logging",
+      "resources": [
+        {
+          "address": "aws_s3_bucket.access_logs[0]",
+          "identity": "meridian-ts-access-logs",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-access-logs",
+            "Note": "Never Object-Lock this bucket \u2014 13 \u00a713.3 Level D.",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "s3-server-access-logs",
+            "tm:component-id": "cmp-target-logging",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "logging",
+            "tm:findings": "LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "audit-and-data-event-logging",
+            "tm:source-unit": "live/target-state/logging",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_s3_bucket"
+        },
+        {
+          "address": "aws_s3_bucket.trail",
+          "identity": "meridian-ts-cloudtrail",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Environment": "target-state",
+            "Finding": "LOG-1",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-cloudtrail",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "cloudtrail-destination",
+            "tm:component-id": "cmp-target-logging",
+            "tm:data-classification": "security-telemetry",
+            "tm:environment": "target-state",
+            "tm:family": "logging",
+            "tm:findings": "LOG-1",
+            "tm:flows": "flow-target-12",
+            "tm:owner": "security-operations",
+            "tm:purpose": "audit-and-data-event-logging",
+            "tm:source-unit": "live/target-state/logging",
+            "tm:trust-zone": "tz-target-security-operations"
+          },
+          "type": "aws_s3_bucket"
+        },
+        {
+          "address": "aws_s3_bucket_ownership_controls.access_logs[0]",
+          "identity": "meridian-ts-access-logs",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_ownership_controls"
+        },
+        {
+          "address": "aws_s3_bucket_policy.trail",
+          "identity": "meridian-ts-cloudtrail",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_policy"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.access_logs[0]",
+          "identity": "meridian-ts-access-logs",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_public_access_block"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.trail",
+          "identity": "meridian-ts-cloudtrail",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_public_access_block"
+        },
+        {
+          "address": "aws_s3_bucket_versioning.trail",
+          "identity": "meridian-ts-cloudtrail",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_versioning"
+        },
+        {
+          "address": "terraform_data.trail[0]",
+          "identity": "trail",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {},
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/logging",
+      "trust_zone": "tz-target-security-operations",
+      "unit": "logging"
+    },
+    {
+      "data_classification": "public-no-pii",
+      "depends_on_units": [
+        "edge",
+        "logging"
+      ],
+      "evidence": {
+        "plan": "plans/s3-public/tfplan.json"
+      },
+      "family": "s3",
+      "findings": [
+        "F-01",
+        "F-02",
+        "F-03",
+        "ENC-1",
+        "ENC-6"
+      ],
+      "flow_ids": [
+        "flow-target-01",
+        "flow-target-11",
+        "flow-target-12"
+      ],
+      "id": "cmp-target-s3-public",
+      "owner": "data-platform",
+      "purpose": "public-assets",
+      "resources": [
+        {
+          "address": "aws_s3_bucket.this",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Classification": "public-no-pii",
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-public-assets",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "public-assets",
+            "tm:component-id": "cmp-target-s3-public",
+            "tm:data-classification": "public-no-pii",
+            "tm:environment": "target-state",
+            "tm:family": "s3",
+            "tm:findings": "F-01,F-02,F-03,ENC-1,ENC-6",
+            "tm:flows": "flow-target-01,flow-target-11,flow-target-12",
+            "tm:owner": "data-platform",
+            "tm:purpose": "public-assets",
+            "tm:source-unit": "live/target-state/s3-public",
+            "tm:trust-zone": "tz-target-public-data"
+          },
+          "type": "aws_s3_bucket"
+        },
+        {
+          "address": "aws_s3_bucket_logging.this[0]",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_logging"
+        },
+        {
+          "address": "aws_s3_bucket_ownership_controls.this",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_ownership_controls"
+        },
+        {
+          "address": "aws_s3_bucket_policy.this[0]",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_policy"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.this",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_public_access_block"
+        },
+        {
+          "address": "aws_s3_bucket_server_side_encryption_configuration.this",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_server_side_encryption_configuration"
+        },
+        {
+          "address": "aws_s3_bucket_versioning.this",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_versioning"
+        },
+        {
+          "address": "aws_s3_object.seed[\"public/marketing/spring-campaign.txt\"]",
+          "identity": "meridian-ts-public-assets",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_object"
+        }
+      ],
+      "source_unit": "live/target-state/s3-public",
+      "trust_zone": "tz-target-public-data",
+      "unit": "s3-public"
+    },
+    {
+      "data_classification": "regulated-pii",
+      "depends_on_units": [
+        "iam",
+        "kms-regulated",
+        "logging"
+      ],
+      "evidence": {
+        "plan": "plans/s3-regulated/tfplan.json"
+      },
+      "family": "s3",
+      "findings": [
+        "F-07",
+        "F-11",
+        "F-14",
+        "ENC-1",
+        "ENC-5",
+        "ENC-6",
+        "LOG-1",
+        "P-01"
+      ],
+      "flow_ids": [
+        "flow-target-03",
+        "flow-target-06",
+        "flow-target-10",
+        "flow-target-12"
+      ],
+      "id": "cmp-target-s3-regulated",
+      "owner": "data-platform",
+      "purpose": "customer-exports",
+      "resources": [
+        {
+          "address": "aws_s3_bucket.this",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Classification": "regulated-pii",
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-customer-exports",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "customer-exports",
+            "tm:component-id": "cmp-target-s3-regulated",
+            "tm:data-classification": "regulated-pii",
+            "tm:environment": "target-state",
+            "tm:family": "s3",
+            "tm:findings": "F-07,F-11,F-14,ENC-1,ENC-5,ENC-6,LOG-1,P-01",
+            "tm:flows": "flow-target-03,flow-target-06,flow-target-10,flow-target-12",
+            "tm:owner": "data-platform",
+            "tm:purpose": "customer-exports",
+            "tm:source-unit": "live/target-state/s3-regulated",
+            "tm:trust-zone": "tz-target-regulated-data"
+          },
+          "type": "aws_s3_bucket"
+        },
+        {
+          "address": "aws_s3_bucket_logging.this[0]",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_logging"
+        },
+        {
+          "address": "aws_s3_bucket_object_lock_configuration.this[0]",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_object_lock_configuration"
+        },
+        {
+          "address": "aws_s3_bucket_ownership_controls.this",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_ownership_controls"
+        },
+        {
+          "address": "aws_s3_bucket_policy.this[0]",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_policy"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.this",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_public_access_block"
+        },
+        {
+          "address": "aws_s3_bucket_server_side_encryption_configuration.this",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_server_side_encryption_configuration"
+        },
+        {
+          "address": "aws_s3_bucket_versioning.this",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_versioning"
+        },
+        {
+          "address": "aws_s3_object.seed[\"exports/manifest.json\"]",
+          "identity": "meridian-ts-customer-exports",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_object"
+        },
+        {
+          "address": "terraform_data.floci_lifecycle[0]",
+          "identity": "floci_lifecycle",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {},
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/s3-regulated",
+      "trust_zone": "tz-target-regulated-data",
+      "unit": "s3-regulated"
+    },
+    {
+      "data_classification": "public-but-user-supplied",
+      "depends_on_units": [
+        "edge",
+        "iam",
+        "kms-ugc",
+        "logging"
+      ],
+      "evidence": {
+        "plan": "plans/s3-ugc/tfplan.json"
+      },
+      "family": "s3",
+      "findings": [
+        "F-07",
+        "F-11",
+        "F-12",
+        "ENC-1",
+        "ENC-5",
+        "ENC-6",
+        "LOG-1",
+        "P-01"
+      ],
+      "flow_ids": [
+        "flow-target-04",
+        "flow-target-08",
+        "flow-target-09",
+        "flow-target-12"
+      ],
+      "id": "cmp-target-s3-ugc",
+      "owner": "data-platform",
+      "purpose": "user-content",
+      "resources": [
+        {
+          "address": "aws_s3_bucket.this",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Classification": "public-but-user-supplied",
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-user-content",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "user-content",
+            "tm:component-id": "cmp-target-s3-ugc",
+            "tm:data-classification": "public-but-user-supplied",
+            "tm:environment": "target-state",
+            "tm:family": "s3",
+            "tm:findings": "F-07,F-11,F-12,ENC-1,ENC-5,ENC-6,LOG-1,P-01",
+            "tm:flows": "flow-target-04,flow-target-08,flow-target-09,flow-target-12",
+            "tm:owner": "data-platform",
+            "tm:purpose": "user-content",
+            "tm:source-unit": "live/target-state/s3-ugc",
+            "tm:trust-zone": "tz-target-published-data"
+          },
+          "type": "aws_s3_bucket"
+        },
+        {
+          "address": "aws_s3_bucket_logging.this[0]",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_logging"
+        },
+        {
+          "address": "aws_s3_bucket_ownership_controls.this",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_ownership_controls"
+        },
+        {
+          "address": "aws_s3_bucket_policy.this[0]",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_policy"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.this",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_public_access_block"
+        },
+        {
+          "address": "aws_s3_bucket_server_side_encryption_configuration.this",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_server_side_encryption_configuration"
+        },
+        {
+          "address": "aws_s3_bucket_versioning.this",
+          "identity": "meridian-ts-user-content",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_versioning"
+        },
+        {
+          "address": "terraform_data.floci_lifecycle[0]",
+          "identity": "floci_lifecycle",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {},
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/s3-ugc",
+      "trust_zone": "tz-target-published-data",
+      "unit": "s3-ugc"
+    },
+    {
+      "data_classification": "untrusted-user-content",
+      "depends_on_units": [
+        "iam",
+        "kms-ugc",
+        "logging"
+      ],
+      "evidence": {
+        "plan": "plans/s3-ugc-quarantine/tfplan.json"
+      },
+      "family": "s3",
+      "findings": [
+        "F-12",
+        "ENC-1",
+        "ENC-5",
+        "ENC-6",
+        "LOG-1",
+        "P-01"
+      ],
+      "flow_ids": [
+        "flow-target-08",
+        "flow-target-09",
+        "flow-target-12"
+      ],
+      "id": "cmp-target-s3-ugc-quarantine",
+      "owner": "content-safety",
+      "purpose": "ugc-quarantine",
+      "resources": [
+        {
+          "address": "aws_s3_bucket.this",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {
+            "Classification": "untrusted-user-content",
+            "Environment": "target-state",
+            "ManagedBy": "terragrunt",
+            "Model": "Examples/S3 v8",
+            "Name": "meridian-ts-ugc-quarantine",
+            "Posture": "hardened",
+            "Project": "meridian-s3-threat-model",
+            "Purpose": "ugc-quarantine",
+            "tm:component-id": "cmp-target-s3-ugc-quarantine",
+            "tm:data-classification": "untrusted-user-content",
+            "tm:environment": "target-state",
+            "tm:family": "s3",
+            "tm:findings": "F-12,ENC-1,ENC-5,ENC-6,LOG-1,P-01",
+            "tm:flows": "flow-target-08,flow-target-09,flow-target-12",
+            "tm:owner": "content-safety",
+            "tm:purpose": "ugc-quarantine",
+            "tm:source-unit": "live/target-state/s3-ugc-quarantine",
+            "tm:trust-zone": "tz-target-quarantine"
+          },
+          "type": "aws_s3_bucket"
+        },
+        {
+          "address": "aws_s3_bucket_logging.this[0]",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_logging"
+        },
+        {
+          "address": "aws_s3_bucket_ownership_controls.this",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_ownership_controls"
+        },
+        {
+          "address": "aws_s3_bucket_policy.this[0]",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_policy"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.this",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_public_access_block"
+        },
+        {
+          "address": "aws_s3_bucket_server_side_encryption_configuration.this",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_server_side_encryption_configuration"
+        },
+        {
+          "address": "aws_s3_bucket_versioning.this",
+          "identity": "meridian-ts-ugc-quarantine",
+          "mode": "managed",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "tags": {},
+          "type": "aws_s3_bucket_versioning"
+        },
+        {
+          "address": "terraform_data.floci_lifecycle[0]",
+          "identity": "floci_lifecycle",
+          "mode": "managed",
+          "provider_name": "terraform.io/builtin/terraform",
+          "tags": {},
+          "type": "terraform_data"
+        }
+      ],
+      "source_unit": "live/target-state/s3-ugc-quarantine",
+      "trust_zone": "tz-target-quarantine",
+      "unit": "s3-ugc-quarantine"
+    }
+  ],
+  "data_flows": [
+    {
+      "authentication": "anonymous",
+      "classification": "public-no-pii",
+      "data": "public asset requests",
+      "id": "flow-target-01",
+      "protocol": "HTTPS",
+      "source": "actor-customer",
+      "target": "cmp-target-edge"
+    },
+    {
+      "authentication": "edge policy",
+      "classification": "mixed",
+      "data": "application requests",
+      "id": "flow-target-02",
+      "protocol": "HTTPS",
+      "source": "cmp-target-edge",
+      "target": "cmp-target-compute"
+    },
+    {
+      "authentication": "scoped instance profile",
+      "classification": "regulated-pii",
+      "data": "version-pinned customer exports",
+      "id": "flow-target-03",
+      "protocol": "HTTPS/S3",
+      "source": "cmp-target-compute",
+      "target": "cmp-target-s3-regulated"
+    },
+    {
+      "authentication": "scoped instance profile",
+      "classification": "public-but-user-supplied",
+      "data": "approved user content",
+      "id": "flow-target-04",
+      "protocol": "HTTPS/S3",
+      "source": "cmp-target-compute",
+      "target": "cmp-target-s3-ugc"
+    },
+    {
+      "authentication": "scoped cross-account role",
+      "classification": "authorization-metadata",
+      "data": "role assumption with external ID",
+      "id": "flow-target-05",
+      "protocol": "STS",
+      "source": "actor-partner",
+      "target": "cmp-target-iam"
+    },
+    {
+      "authentication": "prefix-scoped IAM role",
+      "classification": "regulated-pii",
+      "data": "write-only partner ingestion",
+      "id": "flow-target-06",
+      "protocol": "HTTPS/S3",
+      "source": "cmp-target-iam",
+      "target": "cmp-target-s3-regulated"
+    },
+    {
+      "authentication": "branch-scoped OIDC subject",
+      "classification": "authorization-metadata",
+      "data": "deployment identity",
+      "id": "flow-target-07",
+      "protocol": "OIDC/STS",
+      "source": "actor-cicd",
+      "target": "cmp-target-iam"
+    },
+    {
+      "authentication": "presigned upload",
+      "classification": "untrusted-user-content",
+      "data": "untrusted uploads",
+      "id": "flow-target-08",
+      "protocol": "HTTPS/S3",
+      "source": "actor-customer",
+      "target": "cmp-target-s3-ugc-quarantine"
+    },
+    {
+      "authentication": "promotion role",
+      "classification": "public-but-user-supplied",
+      "data": "scanned and re-encoded content",
+      "id": "flow-target-09",
+      "protocol": "S3 promotion",
+      "source": "cmp-target-s3-ugc-quarantine",
+      "target": "cmp-target-s3-ugc"
+    },
+    {
+      "authentication": "read-only autonomous role",
+      "classification": "regulated-pii",
+      "data": "read-only analytics inputs",
+      "id": "flow-target-10",
+      "protocol": "HTTPS/S3 and KMS",
+      "source": "actor-analytics-agent",
+      "target": "cmp-target-s3-regulated"
+    },
+    {
+      "authentication": "service principal",
+      "classification": "public-no-pii",
+      "data": "public assets",
+      "id": "flow-target-11",
+      "protocol": "S3 encryption",
+      "source": "cmp-target-s3-public",
+      "target": "cmp-target-kms-public"
+    },
+    {
+      "authentication": "service principal",
+      "classification": "security-telemetry",
+      "data": "object-level audit telemetry",
+      "id": "flow-target-12",
+      "protocol": "CloudTrail data events",
+      "source": "cmp-target-s3-regulated",
+      "target": "cmp-target-logging"
+    }
+  ],
+  "display_name": "Meridian S3 target state",
+  "floci_gaps": [
+    {
+      "id": "GAP-FLOCI-S3-POLICY",
+      "summary": "Unsigned S3 data-plane policy evaluation is incomplete"
+    },
+    {
+      "id": "GAP-FLOCI-CLOUDFRONT",
+      "summary": "CloudFront distribution responses are incomplete"
+    },
+    {
+      "id": "GAP-FLOCI-IMDS",
+      "summary": "EC2 instance lifecycle and metadata options are not emulated faithfully"
+    },
+    {
+      "id": "GAP-FLOCI-ACCOUNT-BOUNDARIES",
+      "summary": "The emulator is single-account"
+    }
+  ],
+  "generation": {
+    "catalog": "Examples/S3/architecture/model-tags.json",
+    "catalog_sha256": "27238274694a5aae9b026d264e9518bf4c34c90e0199e212fde8415826a4dacd",
+    "evidence_manifest": "manifest.json",
+    "mode": "deterministic-offline"
+  },
+  "model_id": "meridian-s3-target-state",
+  "posture": "target-state",
+  "runtime_inventory": {
+    "buckets": [
+      "meridian-ts-access-logs",
+      "meridian-ts-cloudtrail",
+      "meridian-ts-customer-exports",
+      "meridian-ts-public-assets",
+      "meridian-ts-ugc-quarantine",
+      "meridian-ts-user-content"
+    ],
+    "event_rules": [
+      "meridian-ts-bucket-acl-changed",
+      "meridian-ts-bucket-policy-changed",
+      "meridian-ts-kms-alias-repointed",
+      "meridian-ts-kms-grant-created",
+      "meridian-ts-kms-key-lifecycle",
+      "meridian-ts-public-access-block-changed",
+      "meridian-ts-role-assumed-by-partner"
+    ],
+    "instances": [],
+    "kms_aliases": [
+      "alias/meridian-ts-customer-exports",
+      "alias/meridian-ts-user-content"
+    ],
+    "roles": [
+      "meridian-ts-admin",
+      "meridian-ts-analytics-agent",
+      "meridian-ts-analytics-reader",
+      "meridian-ts-app-compute",
+      "meridian-ts-cicd-deploy",
+      "meridian-ts-incidentresponder",
+      "meridian-ts-partner-write",
+      "meridian-ts-privacyops",
+      "meridian-ts-readonly",
+      "meridian-ts-securityaudit"
+    ],
+    "scope_prefix": "meridian-ts-",
+    "topics": [
+      "arn:aws:sns:us-east-1:000000000000:meridian-ts-security-alerts"
+    ],
+    "trails": [
+      "meridian-ts-trail"
+    ],
+    "users": []
+  },
+  "schema_version": "1.0.0",
+  "trust_zones": [
+    {
+      "components": [
+        "cmp-target-kms-public",
+        "cmp-target-kms-regulated",
+        "cmp-target-kms-ugc"
+      ],
+      "id": "tz-target-cryptography"
+    },
+    {
+      "components": [
+        "cmp-target-iam"
+      ],
+      "id": "tz-target-identity"
+    },
+    {
+      "components": [
+        "cmp-target-s3-public"
+      ],
+      "id": "tz-target-public-data"
+    },
+    {
+      "components": [
+        "cmp-target-edge"
+      ],
+      "id": "tz-target-public-edge"
+    },
+    {
+      "components": [
+        "cmp-target-s3-ugc"
+      ],
+      "id": "tz-target-published-data"
+    },
+    {
+      "components": [
+        "cmp-target-s3-ugc-quarantine"
+      ],
+      "id": "tz-target-quarantine"
+    },
+    {
+      "components": [
+        "cmp-target-s3-regulated"
+      ],
+      "id": "tz-target-regulated-data"
+    },
+    {
+      "components": [
+        "cmp-target-detection",
+        "cmp-target-logging"
+      ],
+      "id": "tz-target-security-operations"
+    },
+    {
+      "components": [
+        "cmp-target-compute"
+      ],
+      "id": "tz-target-workload"
+    }
+  ]
+}

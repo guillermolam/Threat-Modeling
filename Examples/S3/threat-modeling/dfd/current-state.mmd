@@ -1,0 +1,57 @@
+%% Generated from architecture/model-tags.json; do not edit by hand.
+%% Workshop evidence: B-traceability-log.md, Session Q&A #1 and #2.
+%% Posture: current-state
+flowchart LR
+  subgraph z_tz_current_cryptography["tz-current-cryptography"]
+    direction TB
+    n_cmp_current_kms(["cmp-current-kms<br/>kms: mixed-data-encryption"])
+  end
+  subgraph z_tz_current_data["tz-current-data"]
+    direction TB
+    n_cmp_current_s3_monolith[("cmp-current-s3-monolith<br/>s3-monolith: mixed-object-storage")]
+  end
+  subgraph z_tz_current_identity["tz-current-identity"]
+    direction TB
+    n_cmp_current_iam(["cmp-current-iam<br/>iam: workload-and-human-identities"])
+  end
+  subgraph z_tz_current_public_edge["tz-current-public-edge"]
+    direction TB
+    n_cmp_current_edge(["cmp-current-edge<br/>edge: content-delivery"])
+  end
+  subgraph z_tz_current_security_operations["tz-current-security-operations"]
+    direction TB
+    n_cmp_current_detection(["cmp-current-detection<br/>detection: security-alerting"])
+    n_cmp_current_logging[("cmp-current-logging<br/>logging: audit-and-access-logging")]
+  end
+  subgraph z_tz_current_workload["tz-current-workload"]
+    direction TB
+    n_cmp_current_compute(["cmp-current-compute<br/>compute: application-runtime"])
+  end
+  subgraph z_tz_external_automation["tz-external-automation"]
+    direction TB
+    n_actor_analytics_agent["actor-analytics-agent<br/>Autonomous analytics agent"]
+    n_actor_cicd["actor-cicd<br/>CI/CD pipeline"]
+  end
+  subgraph z_tz_external_partner["tz-external-partner"]
+    direction TB
+    n_actor_partner["actor-partner<br/>Cross-account partner"]
+  end
+  subgraph z_tz_public_internet["tz-public-internet"]
+    direction TB
+    n_actor_customer["actor-customer<br/>Customer browser"]
+  end
+  n_actor_customer -->|"flow-current-01<br/>HTTPS/S3: public assets and exposed objects<br/>auth: anonymous"| n_cmp_current_s3_monolith
+  n_actor_customer -->|"flow-current-02<br/>HTTPS: application requests and user-controlled URLs<br/>auth: application session"| n_cmp_current_compute
+  n_cmp_current_compute -->|"flow-current-03<br/>HTTPS/S3: application objects<br/>auth: instance profile"| n_cmp_current_s3_monolith
+  n_actor_partner -->|"flow-current-04<br/>STS: role assumption<br/>auth: cross-account role"| n_cmp_current_iam
+  n_cmp_current_iam -->|"flow-current-05<br/>HTTPS/S3: partner uploads and cross-prefix reads<br/>auth: IAM role"| n_cmp_current_s3_monolith
+  n_actor_cicd -->|"flow-current-06<br/>OIDC/STS: deployment identity<br/>auth: broad OIDC subject"| n_cmp_current_iam
+  n_actor_analytics_agent -->|"flow-current-07<br/>HTTPS/S3: analytics reads and writes<br/>auth: autonomous IAM role"| n_cmp_current_s3_monolith
+  n_cmp_current_s3_monolith -->|"flow-current-08<br/>KMS: encryption operations<br/>auth: AWS-managed key"| n_cmp_current_kms
+  n_cmp_current_s3_monolith -->|"flow-current-09<br/>AWS logging: management and access logs<br/>auth: service principal"| n_cmp_current_logging
+  classDef actor fill:#fff7ed,stroke:#c2410c,stroke-width:2px,color:#0f172a;
+  classDef service fill:#e0f2fe,stroke:#0369a1,stroke-width:2px,color:#0f172a;
+  classDef datastore fill:#ecfdf5,stroke:#047857,stroke-width:2px,color:#0f172a;
+  class n_actor_analytics_agent,n_actor_cicd,n_actor_partner,n_actor_customer actor;
+  class n_cmp_current_s3_monolith,n_cmp_current_logging datastore;
+  class n_cmp_current_kms,n_cmp_current_iam,n_cmp_current_edge,n_cmp_current_detection,n_cmp_current_compute service;

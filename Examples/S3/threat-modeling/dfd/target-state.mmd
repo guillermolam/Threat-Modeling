@@ -1,0 +1,74 @@
+%% Generated from architecture/model-tags.json; do not edit by hand.
+%% Workshop evidence: B-traceability-log.md, Session Q&A #1 and #2.
+%% Posture: target-state
+flowchart LR
+  subgraph z_tz_external_automation["tz-external-automation"]
+    direction TB
+    n_actor_analytics_agent["actor-analytics-agent<br/>Autonomous analytics agent"]
+    n_actor_cicd["actor-cicd<br/>CI/CD pipeline"]
+  end
+  subgraph z_tz_external_partner["tz-external-partner"]
+    direction TB
+    n_actor_partner["actor-partner<br/>Cross-account partner"]
+  end
+  subgraph z_tz_public_internet["tz-public-internet"]
+    direction TB
+    n_actor_customer["actor-customer<br/>Customer browser"]
+  end
+  subgraph z_tz_target_cryptography["tz-target-cryptography"]
+    direction TB
+    n_cmp_target_kms_public(["cmp-target-kms-public<br/>kms-public: public-assets-encryption"])
+    n_cmp_target_kms_regulated(["cmp-target-kms-regulated<br/>kms-regulated: regulated-data-encryption"])
+    n_cmp_target_kms_ugc(["cmp-target-kms-ugc<br/>kms-ugc: user-content-encryption"])
+  end
+  subgraph z_tz_target_identity["tz-target-identity"]
+    direction TB
+    n_cmp_target_iam(["cmp-target-iam<br/>iam: scoped-workload-and-human-identities"])
+  end
+  subgraph z_tz_target_public_data["tz-target-public-data"]
+    direction TB
+    n_cmp_target_s3_public[("cmp-target-s3-public<br/>s3-public: public-assets")]
+  end
+  subgraph z_tz_target_public_edge["tz-target-public-edge"]
+    direction TB
+    n_cmp_target_edge(["cmp-target-edge<br/>edge: oac-and-waf-content-delivery"])
+  end
+  subgraph z_tz_target_published_data["tz-target-published-data"]
+    direction TB
+    n_cmp_target_s3_ugc[("cmp-target-s3-ugc<br/>s3-ugc: user-content")]
+  end
+  subgraph z_tz_target_quarantine["tz-target-quarantine"]
+    direction TB
+    n_cmp_target_s3_ugc_quarantine[("cmp-target-s3-ugc-quarantine<br/>s3-ugc-quarantine: ugc-quarantine")]
+  end
+  subgraph z_tz_target_regulated_data["tz-target-regulated-data"]
+    direction TB
+    n_cmp_target_s3_regulated[("cmp-target-s3-regulated<br/>s3-regulated: customer-exports")]
+  end
+  subgraph z_tz_target_security_operations["tz-target-security-operations"]
+    direction TB
+    n_cmp_target_detection(["cmp-target-detection<br/>detection: security-alerting"])
+    n_cmp_target_logging[("cmp-target-logging<br/>logging: audit-and-data-event-logging")]
+  end
+  subgraph z_tz_target_workload["tz-target-workload"]
+    direction TB
+    n_cmp_target_compute(["cmp-target-compute<br/>compute: application-runtime"])
+  end
+  n_actor_customer -->|"flow-target-01<br/>HTTPS: public asset requests<br/>auth: anonymous"| n_cmp_target_edge
+  n_cmp_target_edge -->|"flow-target-02<br/>HTTPS: application requests<br/>auth: edge policy"| n_cmp_target_compute
+  n_cmp_target_compute -->|"flow-target-03<br/>HTTPS/S3: version-pinned customer exports<br/>auth: scoped instance profile"| n_cmp_target_s3_regulated
+  n_cmp_target_compute -->|"flow-target-04<br/>HTTPS/S3: approved user content<br/>auth: scoped instance profile"| n_cmp_target_s3_ugc
+  n_actor_partner -->|"flow-target-05<br/>STS: role assumption with external ID<br/>auth: scoped cross-account role"| n_cmp_target_iam
+  n_cmp_target_iam -->|"flow-target-06<br/>HTTPS/S3: write-only partner ingestion<br/>auth: prefix-scoped IAM role"| n_cmp_target_s3_regulated
+  n_actor_cicd -->|"flow-target-07<br/>OIDC/STS: deployment identity<br/>auth: branch-scoped OIDC subject"| n_cmp_target_iam
+  n_actor_customer -->|"flow-target-08<br/>HTTPS/S3: untrusted uploads<br/>auth: presigned upload"| n_cmp_target_s3_ugc_quarantine
+  n_cmp_target_s3_ugc_quarantine -->|"flow-target-09<br/>S3 promotion: scanned and re-encoded content<br/>auth: promotion role"| n_cmp_target_s3_ugc
+  n_actor_analytics_agent -->|"flow-target-10<br/>HTTPS/S3 and KMS: read-only analytics inputs<br/>auth: read-only autonomous role"| n_cmp_target_s3_regulated
+  n_cmp_target_s3_public -->|"flow-target-11<br/>S3 encryption: public assets<br/>auth: service principal"| n_cmp_target_kms_public
+  n_cmp_target_s3_regulated -->|"flow-target-12<br/>CloudTrail data events: object-level audit telemetry<br/>auth: service principal"| n_cmp_target_logging
+  classDef actor fill:#fff7ed,stroke:#c2410c,stroke-width:2px,color:#0f172a;
+  classDef service fill:#e0f2fe,stroke:#0369a1,stroke-width:2px,color:#0f172a;
+  classDef datastore fill:#ecfdf5,stroke:#047857,stroke-width:2px,color:#0f172a;
+  class n_actor_analytics_agent,n_actor_cicd,n_actor_partner,n_actor_customer actor;
+  class n_cmp_target_s3_public,n_cmp_target_s3_ugc,n_cmp_target_s3_ugc_quarantine,n_cmp_target_s3_regulated,n_cmp_target_logging datastore;
+  class n_cmp_target_kms_public,n_cmp_target_kms_regulated,n_cmp_target_kms_ugc,n_cmp_target_iam,n_cmp_target_edge,n_cmp_target_detection,n_cmp_target_compute service;

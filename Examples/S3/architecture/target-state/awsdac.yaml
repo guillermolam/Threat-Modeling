@@ -1,0 +1,310 @@
+{
+  "Diagram": {
+    "DefinitionFiles": [
+      {
+        "LocalFile": "Examples/S3/architecture/definition-meridian.yaml",
+        "Type": "LocalFile"
+      }
+    ],
+    "Links": [
+      {
+        "Source": "RActorCustomer",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetEdge",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetEdge",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetCompute",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetCompute",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetS3Regulated",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetCompute",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetS3Ugc",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorPartner",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetIam",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetIam",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetS3Regulated",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorCicd",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetIam",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorCustomer",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetS3UgcQuarantine",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetS3UgcQuarantine",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetS3Ugc",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RActorAnalyticsAgent",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetS3Regulated",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetS3Public",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetKmsPublic",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      },
+      {
+        "Source": "RCmpTargetS3Regulated",
+        "SourcePosition": "E",
+        "Target": "RCmpTargetLogging",
+        "TargetArrowHead": {
+          "Type": "Open"
+        },
+        "TargetPosition": "W",
+        "Type": "orthogonal"
+      }
+    ],
+    "Resources": {
+      "AWSCloud": {
+        "Children": [
+          "RTzTargetCryptography",
+          "RTzTargetIdentity",
+          "RTzTargetPublicData",
+          "RTzTargetPublicEdge",
+          "RTzTargetPublishedData",
+          "RTzTargetQuarantine",
+          "RTzTargetRegulatedData",
+          "RTzTargetSecurityOperations",
+          "RTzTargetWorkload"
+        ],
+        "Direction": "vertical",
+        "Preset": "AWSCloudNoLogo",
+        "Type": "AWS::Diagram::Cloud"
+      },
+      "Actors": {
+        "Children": [
+          "RActorAnalyticsAgent",
+          "RActorCicd",
+          "RActorCustomer",
+          "RActorPartner"
+        ],
+        "Type": "AWS::Diagram::VerticalStack"
+      },
+      "Canvas": {
+        "Children": [
+          "Actors",
+          "AWSCloud"
+        ],
+        "Direction": "horizontal",
+        "Type": "AWS::Diagram::Canvas"
+      },
+      "RActorAnalyticsAgent": {
+        "Preset": "User",
+        "Title": "Autonomous analytics agent",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RActorCicd": {
+        "Preset": "User",
+        "Title": "CI/CD pipeline",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RActorCustomer": {
+        "Preset": "User",
+        "Title": "Customer browser",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RActorPartner": {
+        "Preset": "User",
+        "Title": "Cross-account partner",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RCmpTargetCompute": {
+        "Title": "compute (application-runtime)",
+        "Type": "AWS::EC2::Instance"
+      },
+      "RCmpTargetDetection": {
+        "Title": "detection (security-alerting)",
+        "Type": "AWS::Events::Rule"
+      },
+      "RCmpTargetEdge": {
+        "Title": "edge (oac-and-waf-content-delivery)",
+        "Type": "AWS::CloudFront::Distribution"
+      },
+      "RCmpTargetIam": {
+        "Title": "iam (scoped-workload-and-human-identities)",
+        "Type": "AWS::IAM::Role"
+      },
+      "RCmpTargetKmsPublic": {
+        "Title": "kms-public (public-assets-encryption)",
+        "Type": "AWS::KMS::Key"
+      },
+      "RCmpTargetKmsRegulated": {
+        "Title": "kms-regulated (regulated-data-encryption)",
+        "Type": "AWS::KMS::Key"
+      },
+      "RCmpTargetKmsUgc": {
+        "Title": "kms-ugc (user-content-encryption)",
+        "Type": "AWS::KMS::Key"
+      },
+      "RCmpTargetLogging": {
+        "Title": "logging (audit-and-data-event-logging)",
+        "Type": "AWS::CloudTrail::Trail"
+      },
+      "RCmpTargetS3Public": {
+        "Title": "s3-public (public-assets)",
+        "Type": "AWS::S3::Bucket"
+      },
+      "RCmpTargetS3Regulated": {
+        "Title": "s3-regulated (customer-exports)",
+        "Type": "AWS::S3::Bucket"
+      },
+      "RCmpTargetS3Ugc": {
+        "Title": "s3-ugc (user-content)",
+        "Type": "AWS::S3::Bucket"
+      },
+      "RCmpTargetS3UgcQuarantine": {
+        "Title": "s3-ugc-quarantine (ugc-quarantine)",
+        "Type": "AWS::S3::Bucket"
+      },
+      "RTzTargetCryptography": {
+        "Children": [
+          "RCmpTargetKmsPublic",
+          "RCmpTargetKmsRegulated",
+          "RCmpTargetKmsUgc"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-cryptography",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetIdentity": {
+        "Children": [
+          "RCmpTargetIam"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-identity",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetPublicData": {
+        "Children": [
+          "RCmpTargetS3Public"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-public-data",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetPublicEdge": {
+        "Children": [
+          "RCmpTargetEdge"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-public-edge",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetPublishedData": {
+        "Children": [
+          "RCmpTargetS3Ugc"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-published-data",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetQuarantine": {
+        "Children": [
+          "RCmpTargetS3UgcQuarantine"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-quarantine",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetRegulatedData": {
+        "Children": [
+          "RCmpTargetS3Regulated"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-regulated-data",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetSecurityOperations": {
+        "Children": [
+          "RCmpTargetDetection",
+          "RCmpTargetLogging"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-security-operations",
+        "Type": "AWS::Diagram::Resource"
+      },
+      "RTzTargetWorkload": {
+        "Children": [
+          "RCmpTargetCompute"
+        ],
+        "Direction": "horizontal",
+        "Title": "tz-target-workload",
+        "Type": "AWS::Diagram::Resource"
+      }
+    }
+  }
+}

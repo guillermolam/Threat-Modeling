@@ -233,3 +233,19 @@ resource "aws_kms_alias" "this" {
   name          = "alias/${local.key_name}"
   target_key_id = aws_kms_key.this[0].key_id
 }
+
+# An intentional "no CMK" decision is still an architecture component: in
+# current state it records ENC-2, while target public assets use SSE-S3 by
+# classification. Keep that reviewed decision in the plan with the same model
+# tags as a native key; it does not claim that Floci or AWS created a KMS key.
+resource "terraform_data" "managed_key_decision" {
+  count = var.create_cmk ? 0 : 1
+
+  input = {
+    key_strategy         = "provider-managed"
+    sse_algorithm        = "AES256"
+    sensitivity_tier     = var.tier
+    customer_managed_key = false
+    tags                 = var.tags
+  }
+}

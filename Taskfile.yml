@@ -1,0 +1,202 @@
+version: 3.52.0
+
+output: prefixed
+
+set:
+  - errexit
+  - nounset
+  - pipefail
+
+env:
+  PATH: '{{.ROOT_DIR}}/.tools/bin:{{.PATH}}'
+
+vars:
+  BASE_SHA: '{{default "" .BASE_SHA}}'
+  HEAD_SHA: '{{default "HEAD" .HEAD_SHA}}'
+
+tasks:
+  default:
+    desc: List the local CI contract
+    cmds:
+      - task --list
+
+  setup:
+    desc: Install pinned tools and synchronize Trunk-managed Git hooks
+    cmds:
+      - ./scripts/ci/install-security-tools.sh
+      - trunk install
+      - trunk git-hooks sync
+      - task: tools:check
+
+  tools:install:
+    desc: Install pinned security binaries under .tools/bin
+    cmds:
+      - ./scripts/ci/install-security-tools.sh
+
+  tools:check:
+    desc: Fail unless every local CI tool has the pinned version
+    cmds:
+      - ./scripts/ci/check-tools.sh
+
+  architecture:tools:install:
+    desc: Install checksum-pinned IaC, Floci, AWS CLI, scanner, and diagram tools
+    cmds:
+      - ./scripts/ci/install-security-tools.sh
+      - ./scripts/ci/install-architecture-tools.sh
+
+  architecture:tools:check:
+    desc: Fail unless the architecture toolchain matches every pinned version
+    cmds:
+      - ./scripts/ci/check-tools.sh
+      - ./scripts/ci/check-architecture-tools.sh
+
+  architecture:test:
+    desc: Run architecture, diagram conversion, HCL, and no-error-masking contracts
+    cmds:
+      - task: architecture:tools:check
+      - ./tests/architecture/contracts.sh
+      - task: threat-model:conversation:test
+      - task: threat-model:dfd:test
+
+  architecture:integration:
+    desc: Rebuild both postures in isolated Floci and reject generated artifact drift
+    cmds:
+      - task: architecture:test
+      - ./scripts/architecture/integration-test.sh
+
+  architecture:update:
+    desc: Rebuild and intentionally update reviewed blueprint and diagram artifacts
+    cmds:
+      - task: architecture:test
+      - ./scripts/architecture/integration-test.sh --update
+
+  llm:start:
+    desc: Start the repository-owned loopback Ollama service when none exists
+    cmds:
+      - ./scripts/llm/start-ollama.sh
+
+  llm:stop:
+    desc: Stop Ollama only when this repository started the process
+    cmds:
+      - ./scripts/llm/stop-ollama.sh
+
+  llm:run:
+    desc: Run a command inside the start/stop lifecycle (pass it after --)
+    requires:
+      vars: [CLI_ARGS]
+    cmds:
+      - ./scripts/llm/with-ollama.sh {{.CLI_ARGS}}
+
+  llm:lifecycle:test:
+    desc: Prove owned services stop and pre-existing services survive
+    cmds:
+      - ./tests/llm/lifecycle.sh
+
+  threat-model:tools:test:
+    desc: Validate adapter provenance, dispositions, pins, and promotion policy
+    cmds:
+      - ./scripts/threat-modeling/validate-tool-evaluation.py
+
+  threat-model:conversation:update:
+    desc: Normalize the reviewed workshop conversation into atomic graph facts
+    cmds:
+      - ./scripts/threat-modeling/update-conversation-facts.sh
+
+  threat-model:formal-system:test:
+    desc: Validate the DFD, OTM, evidence, completeness, and admission contract
+    cmds:
+      - ./scripts/threat-modeling/validate-formal-system.py --system Examples/S3/threat-modeling/formal-system.json --rules Examples/S3/threat-modeling/conversation-normalization.json
+
+  threat-model:conversation:test:
+    desc: Reject alias, relation, uncertainty, embedding, and LLM-boundary drift
+    cmds:
+      - ./tests/threat-modeling/conversation-normalization.sh
+      - ./tests/threat-modeling/prompt-order-invariance.py
+      - ./tests/threat-modeling/closed-set-inference.sh
+
+  threat-model:closed-set:trial:
+    desc: Run one reproducibility-gated closed-set fact through local Ollama
+    cmds:
+      - ./scripts/llm/with-ollama.sh ./scripts/threat-modeling/run-closed-set-trial.sh {{.CLI_ARGS}}
+
+  threat-model:dfd:update:
+    desc: Generate and compile the reviewed current and target DFD artifacts
+    cmds:
+      - ./scripts/threat-modeling/update-dfds.sh
+
+  threat-model:dfd:test:
+    desc: Reject DFD source drift, missing IDs, and Mermaid compilation errors
+    cmds:
+      - ./tests/threat-modeling/dfd-contracts.sh
+
+  lint:hooks:
+    desc: Check hooks and workflow inputs through Trunk without autofix
+    cmds:
+      - ./scripts/ci/lint-hooks.sh
+
+  hooks:sync:
+    desc: Configure Git to use the repository's Trunk hooks
+    cmds:
+      - trunk git-hooks sync
+
+  hooks:pre-commit:
+    desc: Simulate the exact Trunk-managed pre-commit event
+    cmds:
+      - trunk git-hooks callback pre-commit -- {{.CLI_ARGS}}
+
+  hooks:pre-push:
+    desc: Run the installed Trunk pre-push hook using Git records on standard input
+    cmds:
+      - |
+        hook_path="$(git rev-parse --git-path hooks/pre-push)"
+        test -x "${hook_path}"
+        "${hook_path}" {{.CLI_ARGS}}
+
+  secrets:staged:
+    desc: Scan the exact staged snapshot with Betterleaks and TruffleHog
+    cmds:
+      - ./scripts/ci/scan-staged-secrets.sh
+
+  secrets:range:
+    desc: Scan a Git commit range; set BASE_SHA and HEAD_SHA as needed
+    requires:
+      vars: [HEAD_SHA]
+    cmds:
+      - ./scripts/ci/scan-commit-range.sh '{{.BASE_SHA}}' '{{.HEAD_SHA}}'
+
+  zizmor:
+    desc: Audit all local GitHub Actions inputs with strict collection
+    cmds:
+      - ./scripts/ci/run-zizmor.sh .
+
+  zizmor:changed:
+    desc: Audit the HEAD snapshot only when BASE_SHA..HEAD_SHA touches .github/
+    requires:
+      vars: [HEAD_SHA]
+    cmds:
+      - ./scripts/ci/zizmor-if-changed.sh '{{.BASE_SHA}}' '{{.HEAD_SHA}}'
+
+  test:hooks:
+    desc: Run unit tests for hook selection and Git-range behavior
+    cmds:
+      - ./tests/hooks/unit.sh
+
+  test:scanners:
+    desc: Prove both scanners pass clean input and reject a synthetic credential
+    cmds:
+      - ./tests/hooks/scanners.sh
+
+  test:
+    desc: Run all fast local unit tests
+    deps:
+      - test:hooks
+      - test:scanners
+      - llm:lifecycle:test
+      - threat-model:tools:test
+
+  ci:
+    desc: Run the same offline security contract used by GitHub Actions
+    deps: [tools:check, lint:hooks, test]
+    cmds:
+      - ./scripts/ci/scan-commit-range.sh '{{.BASE_SHA}}' '{{.HEAD_SHA}}'
+      - ./scripts/ci/zizmor-if-changed.sh '{{.BASE_SHA}}' '{{.HEAD_SHA}}'

@@ -1,0 +1,171 @@
+# Generated from architecture/model-tags.json; do not edit by hand.
+# Workshop evidence: B-traceability-log.md, Session Q&A #1 and #2.
+direction: right
+z_tz_external_automation: "tz-external-automation" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_actor_analytics_agent: "actor-analytics-agent\nAutonomous analytics agent" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+  n_actor_cicd: "actor-cicd\nCI/CD pipeline" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+}
+z_tz_external_partner: "tz-external-partner" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_actor_partner: "actor-partner\nCross-account partner" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+}
+z_tz_public_internet: "tz-public-internet" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_actor_customer: "actor-customer\nCustomer browser" {
+    shape: rectangle
+    style.fill: "#fff7ed"
+    style.stroke: "#c2410c"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_cryptography: "tz-target-cryptography" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_kms_public: "cmp-target-kms-public\nkms-public: public-assets-encryption" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+  n_cmp_target_kms_regulated: "cmp-target-kms-regulated\nkms-regulated: regulated-data-encryption" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+  n_cmp_target_kms_ugc: "cmp-target-kms-ugc\nkms-ugc: user-content-encryption" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_identity: "tz-target-identity" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_iam: "cmp-target-iam\niam: scoped-workload-and-human-identities" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_public_data: "tz-target-public-data" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_s3_public: "cmp-target-s3-public\ns3-public: public-assets" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_public_edge: "tz-target-public-edge" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_edge: "cmp-target-edge\nedge: oac-and-waf-content-delivery" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_published_data: "tz-target-published-data" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_s3_ugc: "cmp-target-s3-ugc\ns3-ugc: user-content" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_quarantine: "tz-target-quarantine" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_s3_ugc_quarantine: "cmp-target-s3-ugc-quarantine\ns3-ugc-quarantine: ugc-quarantine" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_regulated_data: "tz-target-regulated-data" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_s3_regulated: "cmp-target-s3-regulated\ns3-regulated: customer-exports" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_security_operations: "tz-target-security-operations" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_detection: "cmp-target-detection\ndetection: security-alerting" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+  n_cmp_target_logging: "cmp-target-logging\nlogging: audit-and-data-event-logging" {
+    shape: cylinder
+    style.fill: "#ecfdf5"
+    style.stroke: "#047857"
+    style.stroke-width: 2
+  }
+}
+z_tz_target_workload: "tz-target-workload" {
+  style.fill: "#f8fafc"
+  style.stroke: "#64748b"
+  direction: down
+  n_cmp_target_compute: "cmp-target-compute\ncompute: application-runtime" {
+    shape: rectangle
+    style.fill: "#e0f2fe"
+    style.stroke: "#0369a1"
+    style.stroke-width: 2
+  }
+}
+z_tz_public_internet.n_actor_customer -> z_tz_target_public_edge.n_cmp_target_edge: "flow-target-01\nHTTPS: public asset requests\nauth: anonymous"
+z_tz_target_public_edge.n_cmp_target_edge -> z_tz_target_workload.n_cmp_target_compute: "flow-target-02\nHTTPS: application requests\nauth: edge policy"
+z_tz_target_workload.n_cmp_target_compute -> z_tz_target_regulated_data.n_cmp_target_s3_regulated: "flow-target-03\nHTTPS/S3: version-pinned customer exports\nauth: scoped instance profile"
+z_tz_target_workload.n_cmp_target_compute -> z_tz_target_published_data.n_cmp_target_s3_ugc: "flow-target-04\nHTTPS/S3: approved user content\nauth: scoped instance profile"
+z_tz_external_partner.n_actor_partner -> z_tz_target_identity.n_cmp_target_iam: "flow-target-05\nSTS: role assumption with external ID\nauth: scoped cross-account role"
+z_tz_target_identity.n_cmp_target_iam -> z_tz_target_regulated_data.n_cmp_target_s3_regulated: "flow-target-06\nHTTPS/S3: write-only partner ingestion\nauth: prefix-scoped IAM role"
+z_tz_external_automation.n_actor_cicd -> z_tz_target_identity.n_cmp_target_iam: "flow-target-07\nOIDC/STS: deployment identity\nauth: branch-scoped OIDC subject"
+z_tz_public_internet.n_actor_customer -> z_tz_target_quarantine.n_cmp_target_s3_ugc_quarantine: "flow-target-08\nHTTPS/S3: untrusted uploads\nauth: presigned upload"
+z_tz_target_quarantine.n_cmp_target_s3_ugc_quarantine -> z_tz_target_published_data.n_cmp_target_s3_ugc: "flow-target-09\nS3 promotion: scanned and re-encoded content\nauth: promotion role"
+z_tz_external_automation.n_actor_analytics_agent -> z_tz_target_regulated_data.n_cmp_target_s3_regulated: "flow-target-10\nHTTPS/S3 and KMS: read-only analytics inputs\nauth: read-only autonomous role"
+z_tz_target_public_data.n_cmp_target_s3_public -> z_tz_target_cryptography.n_cmp_target_kms_public: "flow-target-11\nS3 encryption: public assets\nauth: service principal"
+z_tz_target_regulated_data.n_cmp_target_s3_regulated -> z_tz_target_security_operations.n_cmp_target_logging: "flow-target-12\nCloudTrail data events: object-level audit telemetry\nauth: service principal"

@@ -1,14 +1,14 @@
 output "distribution_id" {
-  value = aws_cloudfront_distribution.this.id
+  value = var.use_native_distribution_resource ? aws_cloudfront_distribution.this[0].id : terraform_data.floci_distribution[0].output.id
 }
 
 output "distribution_arn" {
   description = "Feed this into s3-data-bucket.cloudfront_distribution_arn — without that condition the origin stays open to the internet (04 §4.7, attack-tree leaf 2.1)."
-  value       = aws_cloudfront_distribution.this.arn
+  value       = var.use_native_distribution_resource ? aws_cloudfront_distribution.this[0].arn : terraform_data.floci_distribution[0].output.arn
 }
 
 output "domain_name" {
-  value = aws_cloudfront_distribution.this.domain_name
+  value = var.use_native_distribution_resource ? aws_cloudfront_distribution.this[0].domain_name : terraform_data.floci_distribution[0].output.domain_name
 }
 
 output "web_acl_arn" {

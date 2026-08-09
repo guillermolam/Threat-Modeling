@@ -1,5 +1,5 @@
 output "instance_id" {
-  value = aws_instance.app.id
+  value = try(aws_instance.app[0].id, "GAP-FLOCI-EC2")
 }
 
 output "vpc_id" {
@@ -7,7 +7,7 @@ output "vpc_id" {
 }
 
 output "private_ip" {
-  value = aws_instance.app.private_ip
+  value = try(aws_instance.app[0].private_ip, null)
 }
 
 output "imds_posture" {

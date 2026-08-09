@@ -1,0 +1,151 @@
+otmVersion: 0.1.0
+project:
+  id: meridian-s3-study
+  name: Meridian S3 Study
+  description: Sanitized target-state architecture for the Meridian S3 teaching case.
+trustZones:
+  - id: f0ba7722-39b6-4c81-8290-a30a248bb8d9
+    name: Internet
+    risk:
+      trustRating: 10
+  - id: b61d6911-338d-46a8-9f39-8dcd24abfe91
+    name: Public Cloud
+    risk:
+      trustRating: 40
+  - id: a4ada984-0d91-40a2-8ca0-1ea53ea47efc
+    name: AWS Cloud
+    risk:
+      trustRating: 60
+components:
+  - id: internet-client
+    name: Internet Client
+    type: CD-V2-WEB-CLIENT
+    parent: {trustZone: f0ba7722-39b6-4c81-8290-a30a248bb8d9}
+    tags: [external-actor]
+  - id: partner-ingestion
+    name: Partner Ingestion Client
+    type: CD-V2-WEB-CLIENT
+    parent: {trustZone: f0ba7722-39b6-4c81-8290-a30a248bb8d9}
+    tags: [partner]
+  - id: ugc-uploader
+    name: UGC Uploader
+    type: CD-V2-WEB-CLIENT
+    parent: {trustZone: f0ba7722-39b6-4c81-8290-a30a248bb8d9}
+    tags: [untrusted-uploader]
+  - id: cloudfront-oac
+    name: CloudFront with Origin Access Control
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: b61d6911-338d-46a8-9f39-8dcd24abfe91}
+    tags: [content-delivery, origin-access-control]
+  - id: edge-waf
+    name: Edge Web Application Firewall
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: b61d6911-338d-46a8-9f39-8dcd24abfe91}
+    tags: [boundary-device]
+  - id: application-compute
+    name: Application Compute
+    type: CD-V2-AWS-ECS-CLUSTER
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [application-runtime]
+  - id: s3-public
+    name: Public Content Bucket
+    type: CD-V2-AWS-S3
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [public-content]
+  - id: s3-regulated
+    name: Regulated Export Bucket
+    type: CD-V2-AWS-S3
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [regulated-data]
+  - id: s3-ugc-quarantine
+    name: UGC Quarantine Bucket
+    type: CD-V2-AWS-S3
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [user-generated-content, quarantine]
+  - id: s3-ugc-published
+    name: Published UGC Bucket
+    type: CD-V2-AWS-S3
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [user-generated-content, published]
+  - id: malware-scanner
+    name: Malware Scanner
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [security-service]
+  - id: promotion-worker
+    name: UGC Promotion Worker
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [application-runtime]
+  - id: version-pinned-reader
+    name: Version-Pinned Export Reader
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [application-runtime]
+  - id: public-reader-role
+    name: Public Content Reader Role
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [identity]
+  - id: regulated-reader-role
+    name: Regulated Export Reader Role
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [identity]
+  - id: partner-writer-role
+    name: Partner Prefix Writer Role
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [identity, partner]
+  - id: kms-public
+    name: Public Content KMS Key
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [cryptographic-key, public-content]
+  - id: kms-regulated
+    name: Regulated Data KMS Key
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [cryptographic-key, regulated-data]
+  - id: kms-ugc
+    name: UGC KMS Key
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [cryptographic-key, user-generated-content]
+  - id: s3-data-logging
+    name: S3 Data Event Logging
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [audit, s3-data-events]
+  - id: data-event-detection
+    name: Data Event Detection
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [detection]
+  - id: analytics-agent
+    name: Read-Only Analytics Agent
+    type: CD-GENERIC-FUNCTIONAL-COMPONENT
+    parent: {trustZone: a4ada984-0d91-40a2-8ca0-1ea53ea47efc}
+    tags: [machine-learning-artificial-intelligence]
+dataflows:
+  - {id: client-to-waf, name: Request content, source: internet-client, destination: edge-waf}
+  - {id: waf-to-edge, name: Forward allowed request, source: edge-waf, destination: cloudfront-oac}
+  - {id: edge-to-public, name: Read public origin object, source: cloudfront-oac, destination: s3-public}
+  - {id: partner-to-role, name: Assume partner writer role, source: partner-ingestion, destination: partner-writer-role}
+  - {id: partner-role-to-regulated, name: Write partner prefix, source: partner-writer-role, destination: s3-regulated}
+  - {id: upload-to-quarantine, name: Upload untrusted object, source: ugc-uploader, destination: s3-ugc-quarantine}
+  - {id: quarantine-to-scanner, name: Scan quarantined version, source: s3-ugc-quarantine, destination: malware-scanner}
+  - {id: scanner-to-promotion, name: Submit scan verdict, source: malware-scanner, destination: promotion-worker}
+  - {id: promotion-read-version, name: Read approved version, source: promotion-worker, destination: s3-ugc-quarantine}
+  - {id: promotion-write-published, name: Promote approved object, source: promotion-worker, destination: s3-ugc-published}
+  - {id: app-to-public-role, name: Obtain public read authorization, source: application-compute, destination: public-reader-role}
+  - {id: public-role-to-bucket, name: Read public content, source: public-reader-role, destination: s3-public}
+  - {id: reader-to-regulated-role, name: Obtain regulated read authorization, source: version-pinned-reader, destination: regulated-reader-role}
+  - {id: pinned-read, name: Read exact export version, source: regulated-reader-role, destination: s3-regulated}
+  - {id: public-key-use, name: Use public content key, source: s3-public, destination: kms-public}
+  - {id: regulated-key-use, name: Use regulated data key, source: s3-regulated, destination: kms-regulated}
+  - {id: quarantine-key-use, name: Use UGC key, source: s3-ugc-quarantine, destination: kms-ugc}
+  - {id: published-key-use, name: Use UGC key, source: s3-ugc-published, destination: kms-ugc}
+  - {id: bucket-data-events, name: Record S3 object activity, source: s3-regulated, destination: s3-data-logging}
+  - {id: logs-to-detection, name: Evaluate object activity, source: s3-data-logging, destination: data-event-detection}
+  - {id: agent-read, name: Read approved analytics export, source: analytics-agent, destination: version-pinned-reader}
